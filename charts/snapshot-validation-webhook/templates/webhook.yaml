@@ -1,7 +1,3 @@
-{{- if and (not .Values.tls.certManagerIssuerRef) (not .Values.tls.certificateSecret) }}
-  {{ fail "Either set 'tls.certificateSecret' to the name of a kubernetes.io/tls secret or set 'tls.certManagerIssuerRef' to reference an existing cert-manager issuer." }}
-{{- end }}
----
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -32,8 +28,13 @@ webhooks:
         namespace: {{ .Release.Namespace }}
         name: {{ include "snapshot-validation-webhook.fullname" . }}
         path: "/volumesnapshot"
-      {{- if .Values.tls.certificateSecret }}
-      caBundle: {{ get (lookup "v1" "Secret" .Release.Namespace .Values.tls.certificateSecret).data "ca.crt" }}
+      {{- if not .Values.tls.certManagerIssuerRef }}
+      {{- $secret := lookup "v1" "Secret" .Release.Namespace (include "snapshot-validation-webhook.certifcateName" .) }}
+      {{- if $secret }}
+      caBundle: {{ get $secret.data "ca.crt" }}
+      {{- else }}
+      caBundle: ""
+      {{- end }}
       {{- end }}
     admissionReviewVersions:
     - v1

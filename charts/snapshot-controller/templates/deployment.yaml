@@ -1,13 +1,3 @@
-{{- if and (not (.Capabilities.APIVersions.Has "snapshot.storage.k8s.io/v1")) (not (.Capabilities.APIVersions.Has "snapshot.storage.k8s.io/v1beta") ) }}
-  {{ fail (printf `
-Please install the snapshot CRDs before deploying this chart.
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/%s/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/%s/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/%s/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
-` .Chart.AppVersion .Chart.AppVersion .Chart.AppVersion) }}
-{{- end }}
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:

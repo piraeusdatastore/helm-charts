@@ -1,5 +1,13 @@
 Volume Snapshot Controller installed.
 
+{{- if and (not (.Capabilities.APIVersions.Has "snapshot.storage.k8s.io/v1")) (not (.Capabilities.APIVersions.Has "snapshot.storage.k8s.io/v1beta") ) }}
+Please install the snapshot CRDs before deploying this chart, otherwise the controller will not run.
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ .Chart.AppVersion }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ .Chart.AppVersion }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ .Chart.AppVersion }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+{{- end }}
+
 If you already have volume snapshots deployed using a CRDs before v1, you should
 verify that the existing snapshots are upgradable to v1 CRDs. The snapshot controller (>= v3.0.0)
 will label any invalid snapshots it can find. Use the following commands to find any invalid snapshot
