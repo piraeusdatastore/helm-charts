@@ -27,7 +27,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snaps
 Now you can install this chart. See [below](#configuration) for available configuration options.
 
 ```
-helm install piraeus/snapshot-controller
+helm install piraeus-charts/snapshot-controller
 ```
 
 ## Upgrade from older CRDs
@@ -43,7 +43,7 @@ The upgrade procedure can be summarized by the following steps:
 3. Install the snapshot controller using one of the [`3.x.x` releases]:
 
    ```
-   helm install piraeus/snapshot-controller --set image.tag=v3.0.3
+   helm install piraeus-charts/snapshot-controller --set image.tag=v3.0.3
    ```
 4. Ensure that none of the resources are labelled as invalid:
 
@@ -65,7 +65,7 @@ The upgrade procedure can be summarized by the following steps:
 6. Upgrade the [snapshot controller](../snapshot-controller) to the latest version:
 
    ```
-   helm upgrade piraeus/snapshot-controller --set image.tag=v4.1.1
+   helm upgrade piraeus-charts/snapshot-controller --set image.tag=v4.1.1
    ```
 
 ## Configuration
