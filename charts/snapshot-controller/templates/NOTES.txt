@@ -1,0 +1,10 @@
+Volume Snapshot Controller installed.
+
+If you already have volume snapshots deployed using a CRDs before v1, you should
+verify that the existing snapshots are upgradable to v1 CRDs. The snapshot controller (>= v3.0.0)
+will label any invalid snapshots it can find. Use the following commands to find any invalid snapshot
+
+kubectl get volumesnapshots --selector=snapshot.storage.kubernetes.io/invalid-snapshot-resource="" --all-namespaces
+kubectl get volumesnapshotcontents --selector=snapshot.storage.kubernetes.io/invalid-snapshot-resource="" --all-namespaces
+
+If the above commands return any items, you need to remove them before upgrading to the newer v1 CRDs.

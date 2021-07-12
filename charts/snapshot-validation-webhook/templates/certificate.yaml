@@ -1,0 +1,16 @@
+{{ if .Values.tls.certManagerIssuerRef }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "snapshot-validation-webhook.fullname" . }}
+  labels:
+    {{- include "snapshot-validation-webhook.labels" . | nindent 4 }}
+spec:
+  secretName: {{ include "snapshot-validation-webhook.certifcateName" . }}
+  dnsNames:
+    - {{ include "snapshot-validation-webhook.fullname" . }}.{{ .Release.Namespace }}.svc
+  issuerRef:
+    {{- toYaml .Values.tls.certManagerIssuerRef | nindent 4 }}
+  privateKey:
+    rotationPolicy: Always
+{{ end }}

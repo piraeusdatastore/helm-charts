@@ -1,0 +1,20 @@
+apiVersion: v2
+type: application
+name: snapshot-validation-webhook
+version: 1.0.0
+appVersion: "v4.1.1"
+icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+maintainers:
+  - name: The Piraeus Maintainers
+    url: https://github.com/piraeusdatastore/
+description: |
+  Deploys the snapshot-validation-webhook and configures your cluster to validate every `VolumeSnapshot` and
+  `VolumeSnapshotContent` resource by sending it to the webhook.
+keywords:
+  - storage
+  - snapshot
+  - validation
+home: https://github.com/piraeusdatastore/helm-charts
+sources:
+  - https://github.com/piraeusdatastore/helm-charts
+  - https://github.com/kubernetes-csi/external-snapshotter/

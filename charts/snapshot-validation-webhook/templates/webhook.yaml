@@ -1,0 +1,43 @@
+{{- if and (not .Values.tls.certManagerIssuerRef) (not .Values.tls.certificateSecret) }}
+  {{ fail "Either set 'tls.certificateSecret' to the name of a kubernetes.io/tls secret or set 'tls.certManagerIssuerRef' to reference an existing cert-manager issuer." }}
+{{- end }}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ include "snapshot-validation-webhook.fullname" . }}
+  labels:
+    {{- include "snapshot-validation-webhook.labels" . | nindent 4 }}
+  {{- if .Values.tls.certManagerIssuerRef }}
+  annotations:
+    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/{{ include "snapshot-validation-webhook.fullname" . }}
+  {{- end }}
+webhooks:
+  - name: {{ include "snapshot-validation-webhook.name" . }}.csi.kubernetes.io
+    rules:
+      - apiGroups:
+        - snapshot.storage.k8s.io
+        apiVersions:
+        - v1
+        - v1beta1
+        operations:
+        - CREATE
+        - UPDATE
+        resources:
+        - volumesnapshots
+        - volumesnapshotcontents
+        scope: "*"
+    clientConfig:
+      service:
+        namespace: {{ .Release.Namespace }}
+        name: {{ include "snapshot-validation-webhook.fullname" . }}
+        path: "/volumesnapshot"
+      {{- if .Values.tls.certificateSecret }}
+      caBundle: {{ get (lookup "v1" "Secret" .Release.Namespace .Values.tls.certificateSecret).data "ca.crt" }}
+      {{- end }}
+    admissionReviewVersions:
+    - v1
+    - v1beta1
+    sideEffects: None
+    failurePolicy: {{ .Values.webhook.failurePolicy }}
+    timeoutSeconds: {{ .Values.webhook.timeoutSeconds }}
