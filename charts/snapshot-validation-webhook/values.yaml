@@ -12,6 +12,8 @@ webhook:
 
 tls:
   certificateSecret: ""
+  autogenerate: true
+  renew: false
   certManagerIssuerRef: {}
 
 imagePullSecrets: []
