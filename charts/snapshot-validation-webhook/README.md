@@ -9,7 +9,10 @@ or are in the process of installing it.
 
 ## Usage
 
-Webhooks in Kubernetes are required to run on HTTPS. To that end, this charts needs to be configured with either
+Webhooks in Kubernetes are required to run on HTTPS. To that end, this charts needs to be configured with:
+
+* A auto-generated certificate, valid for 10 years. If you want to renew the certificate, set `tls.renew` to `true` and
+  run an upgrade.
 
 * A [cert-manager.io](https://cert-manager.io) issuer able to create a certificate for the webhook service.
 
@@ -79,6 +82,8 @@ The following options are available:
 | `webhook.timeoutSeconds` | Timeout to use when contacting webhook server. | `2` |
 | `webhook.failurePolicy` | Policy to apply when webhook is unavailable. Possible values: `Fail`, `Ignore`. | `Fail` |
 | `tls.certificateSecret` | Name of the static tls secret to use for serving the HTTPS endpoint. | `""` |
+| `tls.autogenerate` | Automatically generate the TLS secret for serving the HTTPS endpoint. | `true` |
+| `tls.renew` | Force renewal of certificate when auto-generating. | `false` |
 | `tls.certManagerIssuerRef` | Issuer to use for provisioning the TLS certificate. If this is used, `tls.certificateSecret` can be left empty. | `{}` |
 | `imagePullSecrets` | Image pull secrets to add to the deployment. | `[]` |
 | `podAnnotations` | Annotations to add to every pod in the deployment. | `{}` |
