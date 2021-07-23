@@ -14,6 +14,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch CRDs for snapshot-controller
+        run: |
+          cd ./charts/snapshot-controller
+          make crds
+
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
