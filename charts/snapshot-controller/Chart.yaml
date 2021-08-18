@@ -1,8 +1,8 @@
 apiVersion: v2
 type: application
 name: snapshot-controller
-version: 1.1.0
-appVersion: "v4.1.1"
+version: 1.2.0
+appVersion: "v4.2.0"
 icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
 maintainers:
   - name: The Piraeus Maintainers
@@ -15,5 +15,7 @@ keywords:
   - snapshot
 home: https://github.com/piraeusdatastore/helm-charts
 sources:
-  - https://github.com/piraeusdatastore/helm-charts
   - https://github.com/kubernetes-csi/external-snapshotter/
+annotations:
+  artifacthub.io/recommendations: |
+    - url: https://artifacthub.io/packages/helm/piraeus-charts/snapshot-validation-webhook

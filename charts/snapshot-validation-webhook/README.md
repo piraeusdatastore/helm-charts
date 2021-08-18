@@ -9,27 +9,23 @@ or are in the process of installing it.
 
 ## Usage
 
-Webhooks in Kubernetes are required to run on HTTPS. To that end, this charts needs to be configured with:
+The following commands install this chart in your cluster. See [below](#configuration) for available configuration
+options.
 
-* A auto-generated certificate, valid for 10 years. If you want to renew the certificate, set `tls.renew` to `true` and
-  run an upgrade.
+```
+helm repo add piraeus-charts https://piraeus.io/helm-charts/
+helm install snapshot-validation-webhook piraeus-charts/snapshot-validation-webhook
+```
 
-* A [cert-manager.io](https://cert-manager.io) issuer able to create a certificate for the webhook service.
+## Upgrades
 
-  To use this method, create an override file like:
-  ```
-  tls:
-    certManagerIssuerRef:
-      name: internal-issuer
-      kind: ClusterIssuer
-  ```
+Upgrades can be done using the normal Helm upgrade mechanism
 
-  To apply the override, use `--values <override-file>`.
+```
+helm repo update
+helm upgrade snapshot-validation-webhook piraeus-charts/snapshot-validation-webhook
+```
 
-* A pre-existing  [`kubernetes.io/tls`] secret and the certificate of the CA used to sign said tls secret.
-
-  To use this method, set `--set tls.certificateSecret=<secretname>`.
-  The secret must be in the same namespace as the deployment and be valid for `<release-name>.<namespace>.svc`.
 
 ## Upgrade from older CRDs
 
@@ -58,20 +54,44 @@ The upgrade procedure can be summarized by the following steps:
 5. Upgrade the CRDs
 
    ```
-   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.1.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
-   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.1.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
-   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.1.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
    ```
 
 6. Upgrade the [snapshot controller](../snapshot-controller) to the latest version:
 
    ```
-   helm upgrade piraeus-charts/snapshot-controller --set image.tag=v4.1.1
+   helm upgrade piraeus-charts/snapshot-controller --set image.tag=v4.2.0
    ```
 
 ## Configuration
 
-The following options are available:
+Webhooks in Kubernetes are required to run on HTTPS. To that end, this charts needs to be configured with one of the
+following options:
+
+* An auto-generated certificate, valid for 10 years. This is the default. If you want to renew the certificate,
+  set `tls.renew` to `true` and run an upgrade.
+
+* A [cert-manager.io](https://cert-manager.io) issuer able to create a certificate for the webhook service.
+
+  To use this method, create an override file like:
+  ```
+  tls:
+    certManagerIssuerRef:
+      name: internal-issuer
+      kind: ClusterIssuer
+  ```
+
+  To apply the override, use `--values <override-file>`.
+
+* A pre-existing  [`kubernetes.io/tls`] secret and the certificate of the CA used to sign said tls secret.
+
+  To use this method, set `--set tls.certificateSecret=<secretname>`.
+  The secret must be in the same namespace as the deployment and be valid for `<release-name>.<namespace>.svc`.
+
+There are additional options that allow customization outside of HTTPS concerns. This is the full list of options
+available.
 
 | Option | Usage | Default |
 |--------|-------|---------|

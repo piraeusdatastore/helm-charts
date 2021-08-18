@@ -15,19 +15,28 @@ kubectl get crd volumesnapshotcontents.snapshot.storage.k8s.io
 ## Usage
 
 First, please ensure you have the [snapshot validation webhook](../snapshot-validation-webhook) installed.
-
-Then, install the latest version of the snapshot CRDs:
-
-```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.1.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.1.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.1.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
-```
-
-Now you can install this chart. See [below](#configuration) for available configuration options.
+Then, install this chart. See [below](#configuration) for available configuration options.
 
 ```
-helm install piraeus-charts/snapshot-controller
+helm repo add piraeus-charts https://piraeus.io/helm-charts/
+helm install snapshot-controller piraeus-charts/snapshot-controller
+```
+
+## Upgrades
+
+Upgrades can be done using the normal Helm upgrade mechanism
+
+```
+helm repo update
+helm upgrade snapshot-controller piraeus-charts/snapshot-controller
+```
+
+To enjoy all the latest features of the snapshot controller, you may want to upgrade your CRDs as well:
+
+```
+kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
 ```
 
 ## Upgrade from older CRDs
@@ -57,15 +66,15 @@ The upgrade procedure can be summarized by the following steps:
 5. Upgrade the CRDs
 
    ```
-   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.1.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
-   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.1.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
-   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.1.1/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+   kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v4.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
    ```
 
 6. Upgrade the [snapshot controller](../snapshot-controller) to the latest version:
 
    ```
-   helm upgrade piraeus-charts/snapshot-controller --set image.tag=v4.1.1
+   helm upgrade piraeus-charts/snapshot-controller --set image.tag=v4.2.0
    ```
 
 ## Configuration
