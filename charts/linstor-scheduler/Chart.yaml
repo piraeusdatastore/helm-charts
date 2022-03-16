@@ -1,0 +1,20 @@
+apiVersion: v2
+name: linstor-scheduler
+description: |
+  Deploys a new kubernetes scheduler, configured to take advantage of storage system information.
+  If a Pod is using a LINSTOR volume, the scheduler will prefer nodes with local data instead of
+  accessing the data via a DRBD diskless.
+type: application
+icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+maintainers:
+  - name: The Piraeus Maintainers
+    url: https://github.com/piraeusdatastore/
+keywords:
+  - storage
+  - scheduler
+home: https://github.com/piraeusdatastore/helm-charts
+sources:
+  - https://github.com/piraeusdatastore/linstor-scheduler-extender
+
+version: 0.1.0
+appVersion: "v0.2.0"
