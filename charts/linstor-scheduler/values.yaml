@@ -1,7 +1,8 @@
 replicaCount: 1
 
-linstorEndpoint: ""
-linstorClientSecret: ""
+linstor:
+  endpoint: ""
+  clientSecret: ""
 
 scheduler:
   args: []
