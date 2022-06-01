@@ -11,14 +11,8 @@ Volume they might use. This works for any setup using LINSTOR, i.e. Piraeus Data
 The scheduler is meant to be installed in the same namespace as LINSTOR itself, otherwise additional steps may be
 required.
 
-First, you need to determine the LINSTOR Controllers' Service URL. Typically, this is:
-
-* `http://piraeus-op-cs.<namespace>.svc:3370`
-* `http://linstor-op-cs.<namespace>.svc:3370`
-
-If you use TLS, use `https://` instead of `http://` and `3371` instead of `3370`. Also note the name of
-the `*-client-secret`
-used by LINSTOR API clients to connect to the API when using TLS.
+If installed along side Piraeus Operator, the LINSTOR endpoint is determined automatically. Otherwise, you need
+to set `linstor.endpoint` and `linstor.clientSecret` values as appropriate.
 
 The following command will install the scheduler for a typical Piraeus Data-Store configuration with TLS enabled:
 
@@ -48,8 +42,8 @@ The following options are available:
 | Option                                        | Usage                                                                                                  | Default                                                                                            |
 |-----------------------------------------------|--------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | `replicaCount`                                | Number of replicas to deploy.                                                                          | `1`                                                                                                |
-| `linstorEndpoint`                             | URL of the LINSTOR Controller API.                                                                     | `""`                                                                                               |
-| `linstorClientSecret`                         | TLS secret to use to authenticate with the LINSTOR API                                                 | `""`                                                                                               |
+| `linstor.endpoint`                            | URL of the LINSTOR Controller API.                                                                     | `""`                                                                                               |
+| `linstor.clientSecret`                        | TLS secret to use to authenticate with the LINSTOR API                                                 | `""`                                                                                               |
 | `extender.image.repository`                   | Repository to pull the linstor-scheduler-extender image from.                                          | `quay.io/piraeusdatastore/linstor-scheduler-extender`                                              |
 | `extender.image.pullPolicy`                   | Pull policy to use. Possible values: `IfNotPresent`, `Always`, `Never`                                 | `IfNotPresent`                                                                                     |
 | `extender.image.tag`                          | Override the tag to pull. If not given, defaults to charts `AppVersion`.                               | `""`                                                                                               |
