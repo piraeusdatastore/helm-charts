@@ -1,8 +1,8 @@
 apiVersion: v2
 type: application
 name: snapshot-validation-webhook
-version: 1.3.1
-appVersion: "v5.0.1"
+version: 1.4.0
+appVersion: "v6.0.1"
 icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
 maintainers:
   - name: The Piraeus Maintainers
