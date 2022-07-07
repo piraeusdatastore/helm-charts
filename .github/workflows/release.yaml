@@ -19,6 +19,11 @@ jobs:
           cd ./charts/snapshot-controller
           make crds
 
+      - name: Fetch CRDs for snapshot-validation-webhook
+        run: |
+          cd ./charts/snapshot-validation-webhook
+          make crds
+
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
