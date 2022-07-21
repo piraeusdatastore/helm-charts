@@ -1,0 +1,57 @@
+image:
+  repository: quay.io/piraeusdatastore/piraeus-ha-controller
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: [ ]
+nameOverride: ""
+fullnameOverride: ""
+
+options:
+  v: 2
+  #drbd-status-interval: 5s
+  #fail-over-timeout: 5s
+  #operations-timeout: 30s
+  #reconcile-interval: 5s
+  #resync-interval: 15m
+  #grace-period-seconds: 10
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: { }
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+podAnnotations: { }
+
+podSecurityContext: { }
+
+securityContext:
+  privileged: true
+  readOnlyRootFilesystem: true
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 100Mi
+
+nodeSelector: { }
+
+tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/control-plane
+    effect: NoSchedule
+  - key: drbd.linbit.com/lost-quorum
+    effect: NoSchedule
+  - key: drbd.linbit.com/force-io-error
+    effect: NoSchedule
+affinity: { }
