@@ -1,0 +1,14 @@
+Piraeus High Availability Controller successfully deployed.
+
+We recommend using the following parameters for your storage class:
+
+  parameters:
+    property.linstor.csi.linbit.com/DrbdOptions/auto-quorum: suspend-io
+    property.linstor.csi.linbit.com/DrbdOptions/Resource/on-no-data-accessible: suspend-io
+    property.linstor.csi.linbit.com/DrbdOptions/Resource/on-suspended-primary-outdated: force-secondary
+    property.linstor.csi.linbit.com/DrbdOptions/Net/rr-conflict: retry-connect
+
+To exclude specific pods from automatic fail-over, use the following annotation:
+
+  annotations:
+    drbd.linbit.com/ignore-fail-over=""

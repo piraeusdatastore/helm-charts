@@ -1,0 +1,18 @@
+apiVersion: v2
+name: piraeus-ha-controller
+description: |
+  Deploys the Piraeus High Availability Controller. Using DRBD quorum, the controller speeds up fail over of stateful
+  workloads in case of storage interruptions.
+type: application
+icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+maintainers:
+  - name: The Piraeus Maintainers
+    url: https://github.com/piraeusdatastore/
+keywords:
+  - storage
+home: https://github.com/piraeusdatastore/helm-charts
+sources:
+  - https://github.com/piraeusdatastore/piraeus-ha-controller
+
+version: 1.0.1
+appVersion: "v1.0.1"
