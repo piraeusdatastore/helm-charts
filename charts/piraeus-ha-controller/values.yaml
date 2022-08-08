@@ -16,6 +16,7 @@ options:
   #reconcile-interval: 5s
   #resync-interval: 15m
   #grace-period-seconds: 10
+  #fail-over-unsafe-pods: false
 
 serviceAccount:
   # Specifies whether a service account should be created
