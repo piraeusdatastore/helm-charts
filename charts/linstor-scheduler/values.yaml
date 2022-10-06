@@ -7,7 +7,7 @@ linstor:
 scheduler:
   args: []
   image:
-    repository: k8s.gcr.io/kube-scheduler
+    repository: registry.k8s.io/kube-scheduler
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the kubernetes release
     tag: ""
