@@ -41,3 +41,11 @@ serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
   name: ""
+
+volumeSnapshotClasses: []
+#  - name: linstor-csi-delete
+#    annotations:
+#      snapshot.storage.kubernetes.io/is-default-class: "true"
+#    driver: linstor.csi.linbit.com
+#    deletionPolicy: Delete
+
