@@ -42,6 +42,10 @@ serviceAccount:
   create: true
   name: ""
 
+serviceMonitor:
+  # Specifies whether a ServiceMonitor should be created
+  create: false
+
 volumeSnapshotClasses: []
 #  - name: linstor-csi-delete
 #    annotations:
