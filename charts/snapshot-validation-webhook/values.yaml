@@ -25,7 +25,11 @@ imagePullSecrets: []
 podAnnotations: {}
 
 networkPolicy:
-  enabled: true
+  enabled: false
+  ingress: {}
+    # - from:
+    #   - ipBlock:
+    #       cidr: 0.0.0.0/0
 
 ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 ##
