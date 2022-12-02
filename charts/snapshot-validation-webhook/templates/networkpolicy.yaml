@@ -14,4 +14,7 @@ spec:
       - podSelector:
           matchLabels:
             {{- include "snapshot-validation-webhook.selectorLabels" . | nindent 12 }}
+    {{- with .Values.networkPolicy.ingress }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 {{- end -}}
