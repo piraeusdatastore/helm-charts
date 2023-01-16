@@ -9,6 +9,9 @@ metadata:
 {{- end }}
   labels:
   {{- include "snapshot-controller.labels" $ | nindent 4 }}
+{{- with .labels }}
+  {{- . | toYaml | trim | nindent 4 }}
+{{- end }}
 driver: {{ .driver }}
 deletionPolicy: {{ .deletionPolicy }}
 {{- with .parameters }}
