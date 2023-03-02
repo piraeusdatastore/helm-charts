@@ -135,6 +135,27 @@ entries:
     version: 0.1.0
   piraeus-ha-controller:
   - apiVersion: v2
+    appVersion: v1.1.3
+    created: "2023-03-02T15:53:50.176899559Z"
+    description: 'Deploys the Piraeus High Availability Controller. Using DRBD quorum,
+      the controller speeds up fail over of stateful workloads in case of storage
+      interruptions. '
+    digest: 8f5decfcf8672f5d65e7c63d23c5c5d8b04778fc0ee2fbd02cc5b2295a84088b
+    home: https://github.com/piraeusdatastore/helm-charts
+    icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+    keywords:
+    - storage
+    maintainers:
+    - name: The Piraeus Maintainers
+      url: https://github.com/piraeusdatastore/
+    name: piraeus-ha-controller
+    sources:
+    - https://github.com/piraeusdatastore/piraeus-ha-controller
+    type: application
+    urls:
+    - https://github.com/piraeusdatastore/helm-charts/releases/download/piraeus-ha-controller-1.1.3/piraeus-ha-controller-1.1.3.tgz
+    version: 1.1.3
+  - apiVersion: v2
     appVersion: v1.1.2
     created: "2023-02-20T10:09:00.153526621Z"
     description: 'Deploys the Piraeus High Availability Controller. Using DRBD quorum,
@@ -1251,4 +1272,4 @@ entries:
     urls:
     - https://github.com/piraeusdatastore/helm-charts/releases/download/snapshot-validation-webhook-1.0.0-rc1/snapshot-validation-webhook-1.0.0-rc1.tgz
     version: 1.0.0-rc1
-generated: "2023-02-20T12:32:08.536654941Z"
+generated: "2023-03-02T15:53:50.177074261Z"
