@@ -16,9 +16,10 @@ fullnameOverride: ""
 
 options:
   v: 1
-  leader-election: true
-  #reconcile-rate: 15s
-  #resync-rate: 15m
+  leaderElection: true
+  #propertyNamespace: Aux
+  #reconcileRate: 15s
+  #resyncRate: 15m
 
 serviceAccount:
   # Specifies whether a service account should be created

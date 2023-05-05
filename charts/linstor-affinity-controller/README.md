@@ -24,7 +24,7 @@ your PV affinity will always match the actual volume placement in LINSTOR.
 
 ## Deployment
 
-The best way to deploy the LINSTOR Affinity Controller is by helm charm. If deployed to the same namespace
+The best way to deploy the LINSTOR Affinity Controller is by helm chart. If deployed to the same namespace
 as [our operator](https://github.com/piraeusdatastore/piraeus-operator) this is quite simple:
 
 ```
@@ -43,9 +43,10 @@ The following options can be set on the chart:
 |-------------------------------|----------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | `replicaCount`                | Number of replicas to deploy.                                                                | `1`                                                           |
 | `options.v`                   | Set verbosity for controller                                                                 | `1`                                                           |
-| `options.leader-election`     | Enable leader election to coordinate betwen multiple replicas.                               | `true`                                                        |
-| `options.reconcile-rate`      | Set the reconcile rate, i.e. how often the cluster state will be checked and updated         | `15s`                                                         |
-| `options.resync-rate`         | How often the controller will resync it's internal cache of Kubernetes resources             | `15m`                                                         |
+| `options.leaderElection`      | Enable leader election to coordinate betwen multiple replicas.                               | `true`                                                        |
+| `options.reconcileRate`       | Set the reconcile rate, i.e. how often the cluster state will be checked and updated         | `15s`                                                         |
+| `options.resyncRate`          | How often the controller will resync it's internal cache of Kubernetes resources             | `15m`                                                         |
+| `options.propertyNamespace`   | Namespace used by LINSTOR CSI to search for node labels.                                     | `Aux` (auto-detected when using Piraeus-Operator)             |
 | `linstor.endpoint`            | URL of the LINSTOR Controller API.                                                           | `""` (auto-detected when using Piraeus-Operator)              |
 | `linstor.clientSecret`        | TLS secret to use to authenticate with the LINSTOR API                                       | `""` (auto-detected when using Piraeus-Operator)              |
 | `image.repository`            | Repository to pull the linstor-affinity-controller image from.                               | `quay.io/piraeusdatastore/linstor-affinity-controller`        |

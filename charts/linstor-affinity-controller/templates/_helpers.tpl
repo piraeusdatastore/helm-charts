@@ -62,11 +62,34 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
+Default argument for property namespaces, if not set
+*/}}
+{{- define "linstor-affinity-controller.defaultPropertyNamespace" -}}
+{{- if not (hasKey .Values.options "propertyNamespace") }}
+{{- if .Capabilities.APIVersions.Has "piraeus.io/v1/LinstorCluster" }}
+- --property-namespace=Aux/topology
+{{- else if or (.Capabilities.APIVersions.Has "piraeus.linbit.com/v1/LinstorController") (.Capabilities.APIVersions.Has "linstor.linbit.com/v1/LinstorController") }}
+- --property-namespace=Aux
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
 Find the linstor client secret containing TLS certificates
 */}}
 {{- define "linstor-affinity-controller.linstorClientSecretName" -}}
 {{- if .Values.linstor.clientSecret }}
 {{- .Values.linstor.clientSecret }}
+{{- else if .Capabilities.APIVersions.Has "piraeus.io/v1/LinstorCluster" }}
+{{- $crs := (lookup "piraeus.io/v1" "LinstorCluster" "" "").items }}
+{{- if $crs }}
+{{- if eq (len $crs) 1 }}
+{{- $item := index $crs 0 }}
+{{- if hasKey $item.spec "apiTLS" }}
+{{- default "linstor-client-tls" $item.spec.apiTLS.clientSecretName }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{- else if .Capabilities.APIVersions.Has "piraeus.linbit.com/v1/LinstorController" }}
 {{- $crs := (lookup "piraeus.linbit.com/v1" "LinstorController" .Release.Namespace "").items }}
 {{- if $crs }}
@@ -90,7 +113,23 @@ Find the linstor client secret containing TLS certificates
 Find the linstor URL by operator resources
 */}}
 {{- define "linstor-affinity-controller.linstorEndpointFromCRD" -}}
-{{- if .Capabilities.APIVersions.Has "piraeus.linbit.com/v1/LinstorController" }}
+{{- if .Capabilities.APIVersions.Has "piraeus.io/v1/LinstorCluster" }}
+{{- $crs := (lookup "piraeus.io/v1" "LinstorCluster" "" "").items }}
+{{- if $crs }}
+{{- if eq (len $crs) 1 }}
+{{- $item := index $crs 0 }}
+{{- range $index, $service := (lookup "v1" "Service" "" "").items }}
+{{- if and (eq (get $service.metadata.labels "app.kubernetes.io/component") "linstor-controller") (eq (get $service.metadata.labels "app.kubernetes.io/instance") $item.metadata.name) }}
+{{- if include "linstor-affinity-controller.linstorClientSecretName" $ }}
+{{- printf "https://%s.%s.svc:3371" $service.metadata.name $service.metadata.namespace }}
+{{- else }}
+{{- printf "http://%s.%s.svc:3370" $service.metadata.name $service.metadata.namespace }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- else if .Capabilities.APIVersions.Has "piraeus.linbit.com/v1/LinstorController" }}
 {{- $crs := (lookup "piraeus.linbit.com/v1" "LinstorController" .Release.Namespace "").items }}
 {{- if $crs }}
 {{- if eq (len $crs) 1 }}

@@ -31,6 +31,7 @@ spec:
         - name: {{ .Chart.Name }}
           args:
             - /linstor-affinity-controller
+            {{- include "linstor-affinity-controller.defaultPropertyNamespace" . | nindent 12 }}
             {{- range $opt, $val := .Values.options }}
             - --{{ $opt | kebabcase }}={{ $val }}
             {{- end }}
