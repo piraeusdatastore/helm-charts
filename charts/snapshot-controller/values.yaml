@@ -12,7 +12,10 @@ image:
   tag: ""
 
 imagePullSecrets: []
+
 podAnnotations: {}
+
+podLabels: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
