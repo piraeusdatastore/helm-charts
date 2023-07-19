@@ -61,3 +61,6 @@ volumeSnapshotClasses: []
 #      velero.io/csi-volumesnapshot-class: "true"
 #    driver: linstor.csi.linbit.com
 #    deletionPolicy: Delete
+
+priorityClassName: ""
+  # Specifies wether a Priority Class should be attached to deployment pods
