@@ -1,0 +1,68 @@
+# Definition of LinstorCluster
+# Ref https://github.com/piraeusdatastore/piraeus-operator/blob/v2/docs/reference/linstorcluster.md
+linstorCluster: {}
+#  # TLS options requires cert-manager (cert-manager.io) to be installed in a cluster
+#  apiTLS:
+#    enabled: true
+#  internalTLS:
+#    enabled: true
+#  # This MASTER_PASSPHRASE required for encrypting and storing snapshot on S3.
+#  # Either define masterPassPhrase or define name of existingSecret
+#  linstorPassphraseSecret:
+#    masterPassPhrase: "shhhSuPerSecRetPassWoRd!11"
+#    # If you would like use existing secret, then comment out 'masterPassPhrase', end uncomment string below
+#    #existingSecretName: "linstor-extra-secret"
+#  #  Run the linstor-cluster on workers, which have "piraeus.io/autoplace: 'yes'" label
+#  nodeSelector:
+#    piraeus.io/autoplace: 'yes'
+
+# Definition of linstorSatelliteConfigurations
+# Ref https://github.com/piraeusdatastore/piraeus-operator/blob/v2/docs/reference/linstorsatelliteconfiguration.md
+linstorSatelliteConfigurations: []
+#  # Satellites configuration list
+#  - name: storage-satellites
+#    # Definition of pools and devices
+#    storagePools:
+#      - name: lvm-thin
+#        lvmThinPool:
+#          volumeGroup: ""
+#          thinPool: thin
+#        source:
+#          hostDevices:
+#            - /dev/sdd
+#    # List of patches. Below described workaround patch for building kernel modules on CentOS 8 Stream
+#    patches:
+#      - target:
+#          kind: Pod
+#          name: satellite
+#        patch: |
+#          apiVersion: v1
+#          kind: Pod
+#          metadata:
+#            name: linstor-satellite
+#          spec:
+#            initContainers:
+#            - name: drbd-module-loader
+#              image: quay.io/piraeusdatastore/drbd9-centos8:v9.2.3
+#
+#    # Optional. List of additional properties. Below described property how to exclude node from AutoplaceTarget
+#    properties:
+#      - name: AutoplaceTarget
+#        value: "no"
+#      # Define nodeSelector, where you can replace labels
+#    nodeSelector:
+#      piraeus.io/autoplace: 'yes'
+
+# List of storageClasses. You can create different SC with different params
+storageClasses: []
+#  - name: linstor-r01
+#    annotations:
+#      storageclass.kubernetes.io/is-default-class: "true"
+#    reclaimPolicy: Delete
+#    allowVolumeExpansion: true
+#    volumeBindingMode: WaitForFirstConsumer
+#    provisioner: linstor.csi.linbit.com
+#    parameters:
+#      linstor.csi.linbit.com/autoPlace: "1"
+#      linstor.csi.linbit.com/storagePool: lvm-thin
+#      linstor.csi.linbit.com/allowRemoteVolumeAccess: "false"

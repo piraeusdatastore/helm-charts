@@ -1,0 +1,27 @@
+apiVersion: piraeus.io/v1
+kind: LinstorCluster
+metadata:
+  name: {{ include "linstor-cluster.fullname" $ }}
+  labels:
+    {{- include "linstor-cluster.labels" $ | nindent 4 }}
+{{- with .Values.linstorCluster }}
+spec:
+  {{- if (include "linstor-cluster.createApiTLSCert" $ ) }}
+  apiTLS:
+    certManager:
+      name: {{ include "linstor-cluster.fullname" $ }}-api-tls
+      kind: Issuer
+  {{- end }}
+  {{- if (include "linstor-cluster.createInternalTLSCert" $) }}
+  internalTLS:
+    certManager:
+      name: {{ include "linstor-cluster.fullname" $ }}-internal-tls
+      kind: Issuer
+  {{- end }}
+  {{- if (include "linstor-cluster.passPhraseSecretName" $) }}
+  linstorPassphraseSecret: {{ include "linstor-cluster.passPhraseSecretName" $ | trim}}
+  {{- end }}
+  {{- with (dig "nodeSelector" (dict) .) }}
+  nodeSelector: {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
