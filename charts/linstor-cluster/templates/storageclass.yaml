@@ -1,0 +1,22 @@
+{{- range .Values.storageClasses }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .name }}
+{{- with .annotations }}
+  annotations: {{- . | toYaml | trim | nindent 4 }}
+{{- end }}
+  labels:
+  {{- include "linstor-cluster.labels" $ | nindent 4 }}
+{{- with .labels }}
+  {{- . | toYaml | trim | nindent 4 }}
+{{- end }}
+provisioner: {{ .provisioner }}
+reclaimPolicy: {{ .reclaimPolicy }}
+volumeBindingMode: {{ .volumeBindingMode }}
+allowVolumeExpansion: {{ .allowVolumeExpansion }}
+{{- with .parameters }}
+parameters: {{- . | toYaml | trim | nindent 2 }}
+{{- end }}
+{{- end }}

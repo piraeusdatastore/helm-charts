@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "linstorCluster": {
+      "type": "object",
+      "properties": {
+        "apiTLS": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          }
+        },
+        "internalTLS": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          }
+        },
+        "linstorPassphraseSecret": {
+          "type": "object",
+          "properties": {
+            "masterPassPhrase": {
+              "type": "string"
+            },
+            "existingSecretName": {
+              "type": "string"
+            }
+          }
+        },
+        "nodeSelector": {
+          "type": "object"
+        }
+      }
+    },
+    "linstorSatelliteConfigurations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nodeSelector": {
+            "type": "object"
+          },
+          "patches": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "patch": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "storagePools": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "storageClasses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "allowVolumeExpansion": {
+            "type": "boolean"
+          },
+          "annotations": {
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "provisioner": {
+            "type": "string"
+          },
+          "reclaimPolicy": {
+            "type": "string"
+          },
+          "volumeBindingMode": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
