@@ -55,7 +55,7 @@ subjects:
   - kind: ServiceAccount
     name: {{ include "linstor-affinity-controller.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
-{{- if get .Values.options "leader-election" }}
+{{- if .Values.options.leaderElection }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
