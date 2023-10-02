@@ -119,7 +119,7 @@ Find the linstor URL by operator resources
 {{- if eq (len $crs) 1 }}
 {{- $item := index $crs 0 }}
 {{- range $index, $service := (lookup "v1" "Service" "" "").items }}
-{{- if and (eq (get $service.metadata.labels "app.kubernetes.io/component") "linstor-controller") (eq (get $service.metadata.labels "app.kubernetes.io/instance") $item.metadata.name) }}
+{{- if and (eq (dig "metadata" "labels" "app.kubernetes.io/component" "" $service) "linstor-controller") (eq (dig "metadata" "labels" "app.kubernetes.io/instance" "" $service) $item.metadata.name) }}
 {{- if include "linstor-affinity-controller.linstorClientSecretName" $ }}
 {{- printf "https://%s.%s.svc:3371" $service.metadata.name $service.metadata.namespace }}
 {{- else }}
