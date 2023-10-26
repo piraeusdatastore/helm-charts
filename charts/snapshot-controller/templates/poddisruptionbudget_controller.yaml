@@ -1,4 +1,4 @@
-{{- if .Values.pdb }}
+{{- if and .Values.controller.enabled .Values.controller.pdb }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
@@ -9,5 +9,5 @@ spec:
   selector:
     matchLabels:
       {{- include "snapshot-controller.selectorLabels" . | nindent 6 }}
-{{ toYaml .Values.pdb | indent 2 }}
+{{ toYaml .Values.controller.pdb | indent 2 }}
 {{- end }}
