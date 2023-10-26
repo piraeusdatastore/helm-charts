@@ -1,4 +1,4 @@
-{{- if .Values.serviceMonitor.create }}
+{{- if and .Values.controller.enabled .Values.controller.serviceMonitor.create }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -8,8 +8,8 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - port: {{ (.Values.args.httpEndpoint | split ":")._1 }}
-      targetPort: {{ (.Values.args.httpEndpoint | split ":")._1 }}
+    - port: {{ (.Values.controller.args.httpEndpoint | split ":")._1 }}
+      targetPort: {{ (.Values.controller.args.httpEndpoint | split ":")._1 }}
       name: http
   selector:
     {{- include "snapshot-controller.selectorLabels" . | nindent 4 }}

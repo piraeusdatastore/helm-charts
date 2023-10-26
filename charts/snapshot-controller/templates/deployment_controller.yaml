@@ -1,3 +1,4 @@
+{{- if .Values.controller.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,37 +6,37 @@ metadata:
   labels:
     {{- include "snapshot-controller.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.controller.replicaCount }}
   selector:
     matchLabels:
       {{- include "snapshot-controller.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.controller.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "snapshot-controller.selectorLabels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
+        {{- with .Values.controller.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.controller.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "snapshot-controller.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            {{- toYaml .Values.controller.securityContext | nindent 12 }}
+          image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
           args:
-            {{- range $flag, $val := .Values.args }}
+            {{- range $flag, $val := .Values.controller.args }}
             - --{{ $flag | kebabcase }}={{ $val }}
             {{- end }}
           ports:
@@ -48,23 +49,25 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+            {{- toYaml .Values.controller.resources | nindent 12 }}
+      {{- with .Values.controller.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.controller.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.controller.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.topologySpreadConstraints }}
+      {{- with .Values.controller.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.priorityClassName }}
-      priorityClassName: {{ .Values.priorityClassName }}
+      {{- if .Values.controller.priorityClassName }}
+      priorityClassName: {{ .Values.controller.priorityClassName }}
       {{- end }}
+{{- end }}
+
