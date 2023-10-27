@@ -1,7 +1,7 @@
 apiVersion: v2
 type: application
 name: snapshot-validation-webhook
-version: 1.8.3
+version: 1.9.0
 appVersion: "v6.3.1"
 icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
 maintainers:
@@ -10,6 +10,8 @@ maintainers:
 description: |
   Deploys the snapshot-validation-webhook and configures your cluster to validate every `VolumeSnapshot` and
   `VolumeSnapshotContent` resource by sending it to the webhook.
+
+  NOTE: Please use the snapshot-controller chart instead: it also deploys the validation webhook.
 keywords:
   - storage
   - snapshot
