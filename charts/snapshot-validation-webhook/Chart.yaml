@@ -20,3 +20,4 @@ sources:
 annotations:
   artifacthub.io/recommendations: |
     - url: https://artifacthub.io/packages/helm/piraeus-charts/snapshot-controller
+deprecated: true
