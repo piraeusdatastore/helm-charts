@@ -70,7 +70,7 @@ If release name contains chart name it will be used as a full name.
 */}}
 {{- define "snapshot-validation-webhook.fullname" -}}
 {{- if contains .Chart.Name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- "snapshot-validation-webhook" }}
 {{- else }}
 {{- printf "%s-%s" .Release.Name "snapshot-validation-webhook" | trunc 63 | trimSuffix "-" }}
 {{- end }}
@@ -80,7 +80,7 @@ If release name contains chart name it will be used as a full name.
 Create chart name and version as used by the chart label.
 */}}
 {{- define "snapshot-validation-webhook.chart" -}}
-{{- printf "%s-%s" "snapshot-validation-webhook" .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
