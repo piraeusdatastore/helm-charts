@@ -85,6 +85,26 @@ entries:
     urls:
     - https://github.com/piraeusdatastore/helm-charts/releases/download/linstor-affinity-controller-1.1.2/linstor-affinity-controller-1.1.2.tgz
     version: 1.1.2
+  linstor-cluster:
+  - apiVersion: v2
+    appVersion: v2.2.0
+    created: "2023-11-06T07:32:11.147305985Z"
+    description: 'Deploy the Linstor Cluster via Piraeus operator '
+    digest: 8fc23c9e293788dda78fd37c59fd0b3daaf65d533b590078885fae5007910fb2
+    home: https://github.com/piraeusdatastore/helm-charts
+    icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+    keywords:
+    - storage
+    maintainers:
+    - name: The Piraeus Maintainers
+      url: https://github.com/piraeusdatastore
+    name: linstor-cluster
+    sources:
+    - https://github.com/piraeusdatastore/linstor-cluster
+    type: application
+    urls:
+    - https://github.com/piraeusdatastore/helm-charts/releases/download/linstor-cluster-0.0.1/linstor-cluster-0.0.1.tgz
+    version: 0.0.1
   linstor-scheduler:
   - apiVersion: v2
     appVersion: v0.3.2
@@ -348,12 +368,12 @@ entries:
   snapshot-controller:
   - apiVersion: v2
     appVersion: v6.3.1
-    created: "2023-10-27T11:51:01.0Z"
-    description: 'Deploys a Snapshot Controller in a cluster. Snapshot Controllers are
-      often bundled with the Kubernetes distribution, this chart is meant for cases where
-      it is not. Also deploys the Snapshot Validation Webhook and configures your cluster
-      to validate every `VolumeSnapshot` and `VolumeSnapshotContent` resource by sending
-      it to the webhook. '
+    created: "2023-10-27T11:51:01Z"
+    description: 'Deploys a Snapshot Controller in a cluster. Snapshot Controllers
+      are often bundled with the Kubernetes distribution, this chart is meant for
+      cases where it is not. Also deploys the Snapshot Validation Webhook and configures
+      your cluster to validate every `VolumeSnapshot` and `VolumeSnapshotContent`
+      resource by sending it to the webhook. '
     digest: deb53487b3fd82b29ff2e5df623343f81f5e42b981ada71b284a471037686522
     home: https://github.com/piraeusdatastore/helm-charts
     icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
@@ -1788,4 +1808,4 @@ entries:
     urls:
     - https://github.com/piraeusdatastore/helm-charts/releases/download/snapshot-validation-webhook-1.0.0-rc1/snapshot-validation-webhook-1.0.0-rc1.tgz
     version: 1.0.0-rc1
-generated: "2023-10-27T11:54:01.644810066Z"
+generated: "2023-11-06T07:32:11.147434826Z"
