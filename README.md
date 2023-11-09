@@ -5,10 +5,10 @@
 A collection of helpful charts for Piraeus and other projects.
 
 * [snapshot controller](./charts/snapshot-controller) deploys a snapshot controller for CSI snapshots.
-* [snapshot validation webhook](./charts/snapshot-validation-webhook) offers stricter validation of snapshot resources.
 * [linstor-scheduler](./charts/linstor-scheduler) offers smart scheduling for Pods using LINSTOR volumes.
 * [piraeus-ha-controller](./charts/piraeus-ha-controller) enabled faster fail-over of workloads when using Piraeus volumes.
 * [linstor-affinity-controller](./charts/linstor-affinity-controller) ensures PV affinity matches the state of LINSTOR volumes.
+* [linstor-cluster](./charts/linstor-cluster) deploys the resources managed by Piraeus Operator v2.
 
 ### Contributing
 
