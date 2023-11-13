@@ -168,6 +168,9 @@ available.
 | `webhook.affinity`                           | Affinity to set on each webhook pod.                                                                                   | `{}`                                                                                               |
 | `webhook.serviceAccount.create`              | Create the service account resource                                                                                    | `true`                                                                                             |
 | `webhook.serviceAccount.name`                | Sets the name of the service account. If left empty, will use the release name as default                              | `""`                                                                                               |
+| `webhook.tests.nodeSelector`                 | Node selector to add to each helm test pod.                                                                            | `{}`                                                                                               |
+| `webhook.tests.tolerations`                  | Tolerations to add to each helm test pod.                                                                              | `[]`                                                                                               |
+| `webhook.tests.affinity`                     | Affinity to set on each helm test pod.                                                                                 | `{}`                                                                                               |
 
 
 [`3.x.x` releases]: https://github.com/kubernetes-csi/external-snapshotter/releases
