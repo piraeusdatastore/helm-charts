@@ -16,5 +16,17 @@ spec:
         - -exc
         - |
           curl -kfsS -X POST -H 'Content-Type: application/json' -d '{{ .Files.Get "tests/valid-admission.json" | trim }}' https://{{ include "snapshot-validation-webhook.fullname" . }}/volumesnapshot | grep -c '"allowed":true'
+  {{- with .Values.webhook.tests.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.webhook.tests.affinity }}
+  affinity:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.webhook.tests.tolerations }}
+  tolerations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   restartPolicy: Never
 {{- end }}

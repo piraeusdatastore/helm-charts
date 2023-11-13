@@ -150,3 +150,10 @@ webhook:
 
   rbac:
     create: true
+
+  tests:
+    nodeSelector: { }
+
+    tolerations: [ ]
+
+    affinity: { }
