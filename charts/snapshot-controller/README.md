@@ -44,7 +44,7 @@ kubectl replace -f https://raw.githubusercontent.com/kubernetes-csi/external-sna
 ## Upgrade from older CRDs
 
 In an effort to tighten validation, the CSI project started enforcing stricter requirements on `VolumeSnapshot` and
-`VolumeSnapshotContent` resources when switching from `v1beta1` to `v1` CRDs. This validation webhook is part of 
+`VolumeSnapshotContent` resources when switching from `v1beta1` to `v1` CRDs. This validation webhook is part of
 enforcing these requirements. When upgrading you [have to ensure non of your resources violate the requirements for `v1`].
 
 The upgrade procedure can be summarized by the following steps:
@@ -88,6 +88,7 @@ The following options are available:
 | `controller.enabled`                     | Toggle to disable the deployment of the snapshot controller.                                                           | `true`                                                                                             |
 | `controller.args`                        | Arguments to pass to the snapshot controller. Note: Keys will be converted to kebab-case, i.e. `oneArg` -> `--one-arg` | `...`                                                                                              |
 | `controller.replicaCount`                | Number of replicas to deploy.                                                                                          | `1`                                                                                                |
+| `controller.revisionHistoryLimit`        | Number of revisions to keep.                                                                                           | `10`                                                                                               |
 | `controller.image.repository`            | Repository to pull the image from.                                                                                     | `registry.k8s.io/sig-storage/snapshot-controller`                                                  |
 | `controller.image.pullPolicy`            | Pull policy to use. Possible values: `IfNotPresent`, `Always`, `Never`                                                 | `IfNotPresent`                                                                                     |
 | `controller.image.tag`                   | Override the tag to pull. If not given, defaults to charts `AppVersion`.                                               | `""`                                                                                               |
@@ -141,6 +142,7 @@ available.
 | `webhook.enabled`                            | Toggle to disable the deployment of the snapshot validation webhook.                                                   | `true`                                                                                             |
 | `webhook.args`                               | Arguments to pass to the snapshot controller. Note: Keys will be converted to kebab-case, i.e. `oneArg` -> `--one-arg` | `...`                                                                                              |
 | `webhook.replicaCount`                       | Number of replicas to deploy.                                                                                          | `1`                                                                                                |
+| `webhook.revisionHistoryLimit`               | Number of revisions to keep.                                                                                           | `10`                                                                                               |
 | `webhook.image.repository`                   | Repository to pull the image from.                                                                                     | `registry.k8s.io/sig-storage/snapshot-validation-webhook`                                          |
 | `webhook.image.pullPolicy`                   | Pull policy to use. Possible values: `IfNotPresent`, `Always`, `Never`                                                 | `IfNotPresent`                                                                                     |
 | `webhook.image.tag`                          | Override the tag to pull. If not given, defaults to charts `AppVersion`.                                               | `""`                                                                                               |

@@ -3,6 +3,8 @@ controller:
 
   replicaCount: 1
 
+  revisionHistoryLimit: 10
+
   args:
     leaderElection: true
     leaderElectionNamespace: "$(NAMESPACE)"
@@ -75,6 +77,8 @@ webhook:
   enabled: true
 
   replicaCount: 1
+
+  revisionHistoryLimit: 10
 
   args:
     tlsPrivateKeyFile: /etc/snapshot-validation/tls.key
