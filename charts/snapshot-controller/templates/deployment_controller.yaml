@@ -70,4 +70,10 @@ spec:
       {{- if .Values.controller.priorityClassName }}
       priorityClassName: {{ .Values.controller.priorityClassName }}
       {{- end }}
+      hostNetwork: {{ .Values.controller.hostNetwork }}
+      {{- with .Values.controller.dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      dnsPolicy: {{ .Values.controller.dnsPolicy }}
 {{- end }}
