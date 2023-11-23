@@ -107,6 +107,9 @@ The following options are available:
 | `controller.rbac.create`                 | Create the necessary roles and bindings for the snapshot controller.                                                   | `true`                                                                                             |
 | `controller.serviceAccount.create`       | Create the service account resource                                                                                    | `true`                                                                                             |
 | `controller.serviceAccount.name`         | Sets the name of the service account. If left empty, will use the release name as default                              | `""`                                                                                               |
+| `controller.hostNetwork`                 | Change `hostNetwork` to `true` when you want the pod to share its host's network namespace.                            | `false`                                                                                            |
+| `controller.dnsConfig`                   | DNS settings for controller pod.                                                                                       | `{}`                                                                                               |
+| `controller.dnsPolicy`                   | DNS Policy for controller pod. For Pods running with hostNetwork, set to `ClusterFirstWithHostNet`.                    | `ClusterFirst`                                                                                     |
 
 
 ### Snapshot Validation Webhook
@@ -133,6 +136,20 @@ following options:
 
   To use this method, set `--set webhook.tls.certificateSecret=<secretname>`.
   The secret must be in the same namespace as the deployment and be valid for `<release-name>.<namespace>.svc`.
+
+***NOTE:*** When using a custom CNI (such as Weave or Calico) on Amazon EKS, the webhook cannot be reached.
+
+> Internal error occurred: failed calling webhook "snapshot-validation-webhook.snapshot.storage.k8s.io": failed to call webhook: Post "https://snapshot-validation-webhook.kube-system.svc:443/volumesnapshot?timeout=2s": Address is not allowed
+
+This happens because the control plane cannot be configured to run on a custom CNI on EKS, so the CNIs
+differ between control plane and worker nodes.
+
+To address this, the webhook can be run in the host network so it can be reached.
+```yaml
+webhook:
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+```
 
 There are additional options that allow customization outside of HTTPS concerns. This is the full list of options
 available.
@@ -173,7 +190,9 @@ available.
 | `webhook.tests.nodeSelector`                 | Node selector to add to each helm test pod.                                                                            | `{}`                                                                                               |
 | `webhook.tests.tolerations`                  | Tolerations to add to each helm test pod.                                                                              | `[]`                                                                                               |
 | `webhook.tests.affinity`                     | Affinity to set on each helm test pod.                                                                                 | `{}`                                                                                               |
-
+| `webhook.hostNetwork`                        | Change `hostNetwork` to `true` when you want the pod to share its host's network namespace.                            | `false`                                                                                            |
+| `webhook.dnsConfig`                          | DNS settings for webhook pod.                                                                                          | `{}`                                                                                               |
+| `webhook.dnsPolicy`                          | DNS Policy for webhook pod. For Pods running with hostNetwork, set to `ClusterFirstWithHostNet`                        | `ClusterFirst`                                                                                     |
 
 [`3.x.x` releases]: https://github.com/kubernetes-csi/external-snapshotter/releases
 [have to ensure non of your resources violate the requirements for `v1`]: https://github.com/kubernetes-csi/external-snapshotter#validating-webhook

@@ -82,4 +82,10 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      hostNetwork: {{ .Values.webhook.hostNetwork }}
+      {{- with .Values.webhook.dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      dnsPolicy: {{ .Values.webhook.dnsPolicy }}
 {{- end }}

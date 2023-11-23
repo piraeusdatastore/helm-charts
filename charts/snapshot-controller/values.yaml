@@ -72,6 +72,14 @@ controller:
   priorityClassName: ""
     # Specifies wether a Priority Class should be attached to deployment pods
 
+  # Change `hostNetwork` to `true` when you want the pod to share its host's network namespace.
+  hostNetwork: false
+
+  # DNS settings for the controller pod. https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsConfig: {}
+  # DNS Policy for controller pod. For Pods running with hostNetwork, set to `ClusterFirstWithHostNet`
+  # For further reference: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy.
+  dnsPolicy: ClusterFirst
 
 webhook:
   enabled: true
@@ -154,6 +162,15 @@ webhook:
 
   rbac:
     create: true
+
+  # Change `hostNetwork` to `true` when you want the pod to share its host's network namespace.
+  hostNetwork: false
+
+  # DNS settings for the webhook pod. https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+  dnsConfig: {}
+  # DNS Policy for webhook pod. For Pods running with hostNetwork, set to `ClusterFirstWithHostNet`
+  # For further reference: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy.
+  dnsPolicy: ClusterFirst
 
   tests:
     nodeSelector: { }
