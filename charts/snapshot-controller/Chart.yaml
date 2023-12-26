@@ -1,8 +1,8 @@
 apiVersion: v2
 type: application
 name: snapshot-controller
-version: 2.0.3
-appVersion: "v6.3.2"
+version: 2.0.4
+appVersion: "v6.3.3"
 icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
 maintainers:
   - name: The Piraeus Maintainers
