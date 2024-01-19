@@ -1,0 +1,82 @@
+{{- if eq .Values.createInternalTLS "cert-manager" }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "linstor-cluster.internalTLSIssuer" . }}
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  commonName: {{ include "linstor-cluster.internalTLSIssuer" . }}
+  secretName: {{ include "linstor-cluster.internalTLSIssuer" . }}
+  duration: 87600h # 10 years
+  isCA: true
+  usages:
+    - signing
+    - key encipherment
+    - cert sign
+  issuerRef:
+    name: {{ include "linstor-cluster.fullname" . }}-ca-bootstrapper
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "linstor-cluster.internalTLSIssuer" . }}
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  ca:
+    secretName: {{ include "linstor-cluster.internalTLSIssuer" . }}
+---
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: internal-tls
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  internalTLS:
+    certManager:
+      name: {{ include "linstor-cluster.internalTLSIssuer" . }}
+      kind: Issuer
+{{- else if eq .Values.createInternalTLS "helm" }}
+{{- $ca := genCA (include "linstor-cluster.internalTLSIssuer" .) 3650 }}
+{{- $controllerCert := genSignedCert (printf "linstor-controller.%s.svc" .Release.Namespace) (list) (list (printf "linstor-controller.%s.svc" .Release.Namespace) (printf "linstor-controller.%s" .Release.Namespace) "linstor-controller") 3650 $ca }}
+{{ $controllerSecretName := dig "internalTLS" "secretName" "linstor-controller-internal-tls" .Values.linstorCluster}}
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: {{ $controllerSecretName }}
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4}}
+stringData:
+  tls.crt: {{ $controllerCert.Cert | quote }}
+  tls.key: {{ $controllerCert.Key | quote }}
+  ca.crt: {{ $ca.Cert | quote }}
+---
+{{- $nodeCert := genSignedCert "linstor-satellite"  (list) (list) 3650 $ca }}
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: {{ include "linstor-cluster.fullname" . }}-node-tls
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4}}
+stringData:
+  tls.crt: {{ $nodeCert.Cert | quote }}
+  tls.key: {{ $nodeCert.Key | quote }}
+  ca.crt: {{ $ca.Cert | quote }}
+---
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: internal-tls
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  internalTLS:
+    secretName: {{ include "linstor-cluster.fullname" . }}-node-tls
+{{- end }}

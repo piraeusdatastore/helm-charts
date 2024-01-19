@@ -1,0 +1,63 @@
+{{- if eq .Values.createApiTLS "cert-manager" }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "linstor-cluster.apiTLSIssuer" . }}
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  commonName: {{ include "linstor-cluster.apiTLSIssuer" . }}
+  secretName: {{ include "linstor-cluster.apiTLSIssuer" . }}
+  duration: 87600h # 10 years
+  isCA: true
+  usages:
+    - signing
+    - key encipherment
+    - cert sign
+  issuerRef:
+    name: {{ include "linstor-cluster.fullname" . }}-ca-bootstrapper
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "linstor-cluster.apiTLSIssuer" . }}
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  ca:
+    secretName: {{ include "linstor-cluster.apiTLSIssuer" . }}
+{{- else if eq .Values.createApiTLS "helm" }}
+{{- $ca := genCA (include "linstor-cluster.apiTLSIssuer" .) 3650 }}
+{{- $controllerCert := genSignedCert (printf "linstor-controller.%s.svc" .Release.Namespace) (list) (list (printf "linstor-controller.%s.svc" .Release.Namespace) (printf "linstor-controller.%s" .Release.Namespace) "linstor-controller") 3650 $ca }}
+{{ $controllerSecretName := dig "apiTLS" "apiSecretName" "linstor-api-tls" .Values.linstorCluster}}
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: {{ $controllerSecretName }}
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4}}
+stringData:
+  tls.crt: {{ $controllerCert.Cert | quote }}
+  tls.key: {{ $controllerCert.Key | quote }}
+  ca.crt: {{ $ca.Cert | quote }}
+{{ $clientCerts := list (dig "apiTLS" "clientSecretName" "linstor-client-tls" .Values.linstorCluster) (dig "apiTLS" "csiControllerSecretName" "linstor-csi-controller-tls" .Values.linstorCluster) (dig "apiTLS" "csiNodeSecretName" "linstor-csi-node-tls" .Values.linstorCluster)}}
+{{- range without (uniq $clientCerts) $controllerSecretName }}
+{{ $cert := genSignedCert . (list) (list) 3650 $ca }}
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: {{ . }}
+  labels:
+    {{- include "linstor-cluster.labels" $ | nindent 4}}
+stringData:
+  tls.crt: {{ $cert.Cert | quote }}
+  tls.key: {{ $cert.Key | quote }}
+  ca.crt: {{ $ca.Cert | quote }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,11 @@
+{{- if or (eq .Values.createApiTLS "cert-manager") (eq .Values.createInternalTLS "cert-manager") }}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "linstor-cluster.fullname" .}}-ca-bootstrapper
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4}}
+spec:
+  selfSigned: { }
+{{- end }}

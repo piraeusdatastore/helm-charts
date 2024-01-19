@@ -1,17 +1,17 @@
 apiVersion: v2
 name: linstor-cluster
 description: |
-  Deploy the Linstor Cluster via Piraeus operator
+  Deploy the Linstor Cluster via Piraeus Operator
 type: application
-icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+kubeVersion: ">= 1.20.0"
 maintainers:
   - name: The Piraeus Maintainers
     url: https://github.com/piraeusdatastore
+home: https://github.com/piraeusdatastore/helm-charts
+icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
 keywords:
   - storage
-home: https://github.com/piraeusdatastore/helm-charts
 sources:
   - https://github.com/piraeusdatastore/linstor-cluster
-
-version: 0.0.1
-appVersion: "v2.2.0"
+version: 1.0.0
+appVersion: "v2.3.0"
