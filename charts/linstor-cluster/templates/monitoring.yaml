@@ -1,0 +1,168 @@
+{{- if .Values.monitoring.enabled }}
+{{- if .Values.monitoring.dashboard.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+  name: linbit-sds-dashboard
+data:
+  linbit-sds-dashboard.json: |
+    {{- .Files.Get "dashboard.json" | nindent 4 }}
+{{- end }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: linstor-controller
+  labels:
+    app.kubernetes.io/component: linstor-controller
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  endpoints:
+{{- if or .Values.createApiTLS (dig "apiTLS" "" .Values.linstorCluster) }}
+    - path: /metrics
+      port: secure-api
+      scheme: https
+      tlsConfig:
+        serverName: linstor-controller
+        keySecret:
+          key: tls.key
+          name: {{ dig "apiTLS" "clientSecretName" "linstor-client-tls" .Values.linstorCluster }}
+        cert:
+          secret:
+            key: tls.crt
+            name: {{ dig "apiTLS" "clientSecretName" "linstor-client-tls" .Values.linstorCluster }}
+        ca:
+          secret:
+            key: ca.crt
+            name: {{ dig "apiTLS" "clientSecretName" "linstor-client-tls" .Values.linstorCluster }}
+{{- else }}
+    - path: /metrics
+      port: api
+      scheme: http
+{{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: linstor-controller
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: linstor-satellite
+  labels:
+    app.kubernetes.io/component: linstor-satellite
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  podMetricsEndpoints:
+  - port: prometheus
+    relabelings:
+    - action: replace
+      sourceLabels:
+      - __meta_kubernetes_pod_node_name
+      targetLabel: node
+    scheme: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: linstor-satellite
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: piraeus-datastore
+  labels:
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  groups:
+  - name: linstor.rules
+    rules:
+    - alert: linstorSatelliteErrorRate
+      annotations:
+        description: |
+          LINSTOR Satellite "{{`{{ $labels.hostname }}` }}" reports {{`{{ $value }}`}} errors in the last 15 minutes.
+          Use "linstor error-reports list --nodes {{`{{ $labels.hostname }}`}} --since 15minutes" to see them.
+      expr: increase(linstor_error_reports_count{module="SATELLITE"}[15m]) > 0
+      labels:
+        severity: warning
+    - alert: linstorControllerErrorRate
+      annotations:
+        description: |
+          LINSTOR Controller reports {{`{{ $value }}`}} errors in the last 15 minutes.
+          Use "linstor error-reports list --since 15minutes" to see them.
+      expr: increase(linstor_error_reports_count{module="CONTROLLER"}[15m]) > 0
+      labels:
+        severity: warning
+    - alert: linstorSatelliteNotOnline
+      annotations:
+        description: |
+          LINSTOR Satellite "{{`{{ $labels.hostname }}`}}" is not ONLINE.
+          Check that the Satellite is running and reachable from the LINSTOR Controller.
+      expr: linstor_node_state{nodetype="SATELLITE"} != 2
+      labels:
+        severity: critical
+    - alert: linstorStoragePoolErrors
+      annotations:
+        description: |
+          Storage pool "{{`{{ $labels.storage_pool }}`}}" on node "{{`{{ $labels.node }}`}}" ({{`{{ $labels.driver }}`}}={{`{{ $labels.backing_pool }}`}}) is reporting errors.
+      expr: linstor_storage_pool_error_count > 0
+      labels:
+        severity: critical
+    - alert: linstorStoragePoolAtCapacity
+      annotations:
+        description: |
+          Storage pool "{{`{{ $labels.storage_pool }}`}}" on node "{{`{{ $labels.node }}`}}" ({{`{{ $labels.driver }}`}}={{`{{ $labels.backing_pool }}`}}) has less than 20% free space available.
+      expr: ( linstor_storage_pool_capacity_free_bytes / linstor_storage_pool_capacity_total_bytes ) < 0.20
+      labels:
+        severity: warn
+  - name: drbd.rules
+    rules:
+    - alert: drbdConnectionNotConnected
+      annotations:
+        description: |
+          DRBD Resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" is not connected to "{{`{{ $labels.conn_name }}`}}": {{`{{ $labels.drbd_connection_state }}`}}.
+      expr: drbd_connection_state{drbd_connection_state!="Connected"} > 0
+      labels:
+        severity: warn
+    - alert: drbdDeviceNotUpToDate
+      annotations:
+        description: |
+          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" has unexpected device state "{{`{{ $labels.drbd_device_state }}`}}".
+      expr: drbd_device_state{drbd_device_state!~"UpToDate|Diskless"} > 0
+      labels:
+        severity: warn
+    - alert: drbdDeviceUnintentionalDiskless
+      annotations:
+        description: |
+          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" is unintenionally diskless.
+          This usually indicates IO errors reported on the backing device. Check the kernel log.
+      expr: drbd_device_unintentionaldiskless > 0
+      labels:
+        severity: warn
+    - alert: drbdDeviceWithoutQuorum
+      annotations:
+        description: |
+          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" has no quorum.
+          This usually indicates connectivity issues.
+      expr: drbd_device_quorum == 0
+      labels:
+        severity: warn
+    - alert: drbdResourceSuspended
+      annotations:
+        description: |
+          DRBD resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" has been suspended for 1m.
+      expr: drbd_resource_suspended > 0
+      for: 1m
+      labels:
+        severity: warn
+    - alert: drbdResourceResyncWithoutProgress
+      annotations:
+        description: |
+          DRBD resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" has been in Inconsistent without resync progress for 5 minutes.
+          This may indicate there is no connection to UpToDate data, or a stuck resync.
+      expr: drbd_device_state{drbd_device_state="Inconsistent"} and delta(drbd_peerdevice_outofsync_bytes[5m])
+        >= 0
+      labels:
+        severity: warn
+{{- end }}

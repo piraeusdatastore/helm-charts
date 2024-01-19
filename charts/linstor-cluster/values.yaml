@@ -1,57 +1,216 @@
 # Definition of LinstorCluster
 # Ref https://github.com/piraeusdatastore/piraeus-operator/blob/v2/docs/reference/linstorcluster.md
 linstorCluster: {}
-#  # TLS options requires cert-manager (cert-manager.io) to be installed in a cluster
-#  apiTLS:
-#    enabled: true
-#  internalTLS:
-#    enabled: true
-#  # This MASTER_PASSPHRASE required for encrypting and storing snapshot on S3.
-#  # Either define masterPassPhrase or define name of existingSecret
-#  linstorPassphraseSecret:
-#    masterPassPhrase: "shhhSuPerSecRetPassWoRd!11"
-#    # If you would like use existing secret, then comment out 'masterPassPhrase', end uncomment string below
-#    #existingSecretName: "linstor-extra-secret"
-#  #  Run the linstor-cluster on workers, which have "piraeus.io/autoplace: 'yes'" label
+## Only deploy LINBIT SDS on the nodes matching these labels.
 #  nodeSelector:
-#    piraeus.io/autoplace: 'yes'
+#    example.com/worker: ""
+#
+## Only deploy LINBIT SDS on nodes matching these affinity settings.
+#  nodeAffinity:
+#    nodeSelectorTerms:
+#      - matchExpressions:
+#          - key: ""
+#            operator: NotIn
+#            values:
+#              - example.com/no-storage
+#              - example.com/windows
+#
+## Instead of pulling from default locations, pull from this registry.
+## For example drbd.io/linstor-controller would become registry.example.com/linbit-sds/linstor-controller.
+#  repository: registry.example.com/linbit-sds
+#
+## Secret to store the LINSTOR Passphrase. Set "linstorPassphrase" to configure directly with this chart.
+#  linstorPassphraseSecret: passphrase-secret
+#
+## Instead of deploying a LINSTOR Controller, use an existing controller reachable at the given URL.
+#  externalController:
+#    url: http://linstor-controller.external.example.com:3370
+#
+## Configure TLS for the LINSTOR API. Set "createApiTLS" to create the certificates with this chart.
+#  apiTLS:
+#    certManager:
+#      name: api-issuer
+#      kind: Issuer
+#    apiSecretName: linstor-api-tls
+#    clientSecretName: linstor-client-tls
+#    csiControllerSecretName: linstor-csi-controller-tls
+#    csiNodeSecretName: linstor-csi-node-tls
+#
+## Configure TLS between LINSTOR Controller and Satellites. Set "createInternalTLS" to create the certificates with this chart.
+#  internalTLS:
+#    certManager:
+#      name: internal-issuer
+#      kind: Issuer
+#    secretName: internal-tls
+#
+## Set the LINSTOR Properties on the Controller level
+#  properties:
+#    - name: DrbdOptions/Net/tls
+#      value: "yes"
+#
+## Apply patches to the Operator-managed resources.
+#  patches:
+#    - target:
+#        kind: Service
+#        name: linstor-controller
+#      patch: |
+#        apiVersion: v1
+#        kind: Service
+#        metadata:
+#          name: linstor-controller
+#        spec:
+#          ipFamilyPolicy: SingleStack
+#
+## Configure the LINSTOR Controller component.
+#  controller:
+#    enabled: true
+#    podTemplate:
+#      spec:
+#        hostNetwork: true
+#
+## Configure the LINSTOR CSI Controller component.
+#  csiController:
+#    enabled: true
+#    podTemplate:
+#      spec:
+#        hostNetwork: true
+#
+## Configure the LINSTOR CSI Node component.
+#  csiNode:
+#    enabled: true
+#    podTemplate:
+#      spec:
+#        hostNetwork: true
+#
+## Configure the LINSTOR High Availability Controller component.
+#  highAvailabilityController:
+#    enabled: true
+#    podTemplate:
+#      spec:
+#        hostNetwork: true
+
+# Create a passpharse secret for LINSTOR.
+# If set, automatically also sets linstorCluster.linstorPasspharseSecret
+linstorPassphrase: ""
+
+# Create the necessary certificates for linstorCluster.apiTLS using the provided method:
+# * "" will not create any certificates.
+# * "helm" will use Helm itself to generate certificates.
+# * "cert-manager" will create a self-signed CA provisioner using a cert-manager.io Issuer.
+createApiTLS: ""
+
+# Create the necessary certificates for linstorCluster.internalTLS using the provided method:
+# * "" will not create any certificates.
+# * "helm" will use Helm itself to generate certificates.
+# * "cert-manager" will create a self-signed CA provisioner using a cert-manager.io Issuer.
+createInternalTLS: ""
 
 # Definition of linstorSatelliteConfigurations
 # Ref https://github.com/piraeusdatastore/piraeus-operator/blob/v2/docs/reference/linstorsatelliteconfiguration.md
 linstorSatelliteConfigurations: []
-#  # Satellites configuration list
-#  - name: storage-satellites
-#    # Definition of pools and devices
-#    storagePools:
-#      - name: lvm-thin
-#        lvmThinPool:
-#          volumeGroup: ""
-#          thinPool: thin
-#        source:
-#          hostDevices:
-#            - /dev/sdd
-#    # List of patches. Below described workaround patch for building kernel modules on CentOS 8 Stream
-#    patches:
-#      - target:
-#          kind: Pod
-#          name: satellite
-#        patch: |
-#          apiVersion: v1
-#          kind: Pod
-#          metadata:
-#            name: linstor-satellite
-#          spec:
-#            initContainers:
-#            - name: drbd-module-loader
-#              image: quay.io/piraeusdatastore/drbd9-centos8:v9.2.3
+## Name to give the satellite configuration
+#- name: worker-config
 #
-#    # Optional. List of additional properties. Below described property how to exclude node from AutoplaceTarget
-#    properties:
-#      - name: AutoplaceTarget
-#        value: "no"
-#      # Define nodeSelector, where you can replace labels
-#    nodeSelector:
-#      piraeus.io/autoplace: 'yes'
+## Only apply configuration on the nodes matching these labels.
+#  nodeSelector:
+#    example.com/worker: ""
+#
+## Only apply configuration on the nodes matching this affinity.
+#  nodeAffinity:
+#    nodeSelectorTerms:
+#      - matchExpressions:
+#          - key: ""
+#            operator: NotIn
+#            values:
+#              - example.com/no-storage
+#              - example.com/windows
+#
+## Configure TLS between LINSTOR Controller and Satellites. If "createInternalTLS" is set, it will automatically create
+## a configuration that sets internalTLS for all satellites.
+#  internalTLS:
+#    certManager:
+#      name: internal-issuer
+#      kind: Issuer
+#    secretName: internal-tls
+#
+## Additional properties to apply on the LINSTOR Satellite. Can inherit values from the Kubernetes Node resource.
+#  properties:
+#    - name: AutoplaceTarget
+#      value: "no"
+#    - name: Aux/topology/failure-domain
+#      valueFrom:
+#        nodeFieldRef: metadata.annotations['example.com/failure-domain']
+#      optional: true
+#
+## Configure Storage Pools for the node.
+#  storagePools:
+#    - name: lvm
+#      properties:
+#        - name: StorDriver/LvcreateOptions
+#          value: "--compression y"
+#      lvmPool:
+#        volumeGroup: vg1
+#    - name: lvm-thin
+#      properties:
+#        - name: StorDriver/LvcreateOptions
+#          value: "--compression y"
+#      lvmThinPool:
+#        volumeGroup: vg2
+#        thinPool: thin
+#      source:
+#        hostDevices:
+#          - /dev/nvme1
+#
+## Override the default Pod template used for the Satellite.
+#  podTemplate:
+#    spec:
+#      hostNetwork: true
+#
+## Apply patches to the Operator managed resources.
+#  patches:
+#    - target:
+#        kind: ConfigMap
+#        name: reactor-config
+#      patch: |
+#        apiVersion: v1
+#        kind: ConfigMap
+#        metadata:
+#          name: reactor-config
+#        data:
+#          prometheus.toml: |
+#            [[prometheus]]
+#            enums = false
+#            address = ":9942"
+
+# Definition of linstorNodeConnections
+# Ref https://github.com/piraeusdatastore/piraeus-operator/blob/v2/docs/reference/linstornodeconnection.md
+linstorNodeConnections: []
+## Name for the node connection
+#- name: cross-region
+#
+## Select the pairs of nodes between which the following setting should apply.
+## The example selects all pairs of nodes that are not in the same region
+#  selector:
+#    - matchLabels:
+#        - key: topology.kubernetes.io/region
+#          op: NotSame
+## Properties to set for the connection
+#  properties:
+#    - name: DrbdOptions/Net/protocol
+#      value: B
+## Paths to configure: LINSTOR will use these preferred paths if configured instead of the default interface.
+#  paths:
+#    - interface: enp0s1
+#      name: wan
+
+# Enable monitoring via Prometheus Operator
+monitoring:
+  # Set to true to create prometheus monitoring opjects
+  enabled: false
+  # Configuration for the default Grafana dashboard
+  dashboard:
+    # Enable deployment of the Grafana dashboard
+    enabled: true
 
 # List of storageClasses. You can create different SC with different params
 storageClasses: []

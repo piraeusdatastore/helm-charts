@@ -4,19 +4,21 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: {{ .name }}
-{{- with .annotations }}
-  annotations: {{- . | toYaml | trim | nindent 4 }}
+{{- if .annotations }}
+  annotations:
+    {{- toYaml .annotations | nindent 4 }}
 {{- end }}
   labels:
-  {{- include "linstor-cluster.labels" $ | nindent 4 }}
-{{- with .labels }}
-  {{- . | toYaml | trim | nindent 4 }}
+    {{- include "linstor-cluster.labels" $ | nindent 4 }}
+{{- if .labels }}
+    {{- toYaml .labels | nindent 4 }}
 {{- end }}
-provisioner: {{ .provisioner }}
-reclaimPolicy: {{ .reclaimPolicy }}
-volumeBindingMode: {{ .volumeBindingMode }}
-allowVolumeExpansion: {{ .allowVolumeExpansion }}
-{{- with .parameters }}
-parameters: {{- . | toYaml | trim | nindent 2 }}
+provisioner: {{ .provisioner | default "linstor.csi.linbit.com" }}
+reclaimPolicy: {{ .reclaimPolicy | default "Delete" }}
+volumeBindingMode: {{ .volumeBindingMode | default "WaitForFirstConsumer" }}
+allowVolumeExpansion: {{ .allowVolumeExpansion | default "true" }}
+{{- if .parameters }}
+parameters:
+  {{- toYaml .parameters | nindent 2 }}
 {{- end }}
 {{- end }}
