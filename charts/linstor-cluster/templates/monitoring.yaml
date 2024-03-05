@@ -78,6 +78,13 @@ spec:
   groups:
   - name: linstor.rules
     rules:
+    - alert: linstorControllerOffline
+      annotations:
+        description: |
+          LINSTOR Controller is not reachable.
+      expr: up{job="linstor-controller"} == 0
+      labels:
+        severity: critical
     - alert: linstorSatelliteErrorRate
       annotations:
         description: |
@@ -118,6 +125,13 @@ spec:
         severity: warn
   - name: drbd.rules
     rules:
+    - alert: drbdReactorOffline
+      annotations:
+        description: |
+          DRBD Reactor on "{{`{{ $labels.node }}`}}" is not reachable.
+      expr: up{job="{{ .Release.Namespace }}/linstor-satellite"} == 0
+      labels:
+        severity: critical
     - alert: drbdConnectionNotConnected
       annotations:
         description: |
