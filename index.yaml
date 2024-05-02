@@ -2,6 +2,27 @@ apiVersion: v1
 entries:
   linstor-affinity-controller:
   - apiVersion: v2
+    appVersion: v1.0.1
+    created: "2024-05-02T12:26:12.27058993Z"
+    description: 'Deploys the LINSTOR Affinity Controller. It periodically checks
+      the state of Piraeus/LINSTOR volumes compared to PersistentVolumes (PV), and
+      updates the PV Affinity if changes are detected. '
+    digest: b59568d76287cece6140b42382498b8e30f9c40fec948bc99cf712cfbece1606
+    home: https://github.com/piraeusdatastore/helm-charts
+    icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+    keywords:
+    - storage
+    maintainers:
+    - name: The Piraeus Maintainers
+      url: https://github.com/piraeusdatastore/
+    name: linstor-affinity-controller
+    sources:
+    - https://github.com/piraeusdatastore/linstor-affinity-controller
+    type: application
+    urls:
+    - https://github.com/piraeusdatastore/helm-charts/releases/download/linstor-affinity-controller-1.3.1/linstor-affinity-controller-1.3.1.tgz
+    version: 1.3.1
+  - apiVersion: v2
     appVersion: v1.0.0
     created: "2023-10-02T07:28:35.86844021Z"
     description: 'Deploys the LINSTOR Affinity Controller. It periodically checks
@@ -406,6 +427,31 @@ entries:
     - https://github.com/piraeusdatastore/helm-charts/releases/download/piraeus-ha-controller-1.0.1/piraeus-ha-controller-1.0.1.tgz
     version: 1.0.1
   snapshot-controller:
+  - apiVersion: v2
+    appVersion: v7.0.2
+    created: "2024-05-02T12:26:12.450529399Z"
+    description: 'Deploys a Snapshot Controller in a cluster. Snapshot Controllers
+      are often bundled with the Kubernetes distribution, this chart is meant for
+      cases where it is not. Also deploys the Snapshot Validation Webhook and configures
+      your cluster to validate every `VolumeSnapshot` and `VolumeSnapshotContent`
+      resource by sending it to the webhook. '
+    digest: 8bca17dae31b7a5e859ebbbe2bfc638d28eea15b4a03be2785ce617f57bcc363
+    home: https://github.com/piraeusdatastore/helm-charts
+    icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+    keywords:
+    - storage
+    - snapshot
+    - validation
+    maintainers:
+    - name: The Piraeus Maintainers
+      url: https://github.com/piraeusdatastore/
+    name: snapshot-controller
+    sources:
+    - https://github.com/kubernetes-csi/external-snapshotter/
+    type: application
+    urls:
+    - https://github.com/piraeusdatastore/helm-charts/releases/download/snapshot-controller-2.2.2/snapshot-controller-2.2.2.tgz
+    version: 2.2.2
   - apiVersion: v2
     appVersion: v7.0.1
     created: "2024-04-04T13:56:32.237623804Z"
@@ -2048,4 +2094,4 @@ entries:
     urls:
     - https://github.com/piraeusdatastore/helm-charts/releases/download/snapshot-validation-webhook-1.0.0-rc1/snapshot-validation-webhook-1.0.0-rc1.tgz
     version: 1.0.0-rc1
-generated: "2024-04-04T13:56:32.238035504Z"
+generated: "2024-05-02T12:26:12.450836271Z"
