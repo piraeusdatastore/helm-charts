@@ -67,7 +67,7 @@ webhooks:
         - CREATE
         - UPDATE
         resources:
-        - volumesnapshotcontents
+        - volumesnapshotclasses
         scope: "*"
     clientConfig:
       service:
