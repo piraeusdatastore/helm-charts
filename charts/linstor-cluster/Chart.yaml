@@ -3,7 +3,7 @@ name: linstor-cluster
 description: |
   Deploy the Linstor Cluster via Piraeus Operator
 type: application
-kubeVersion: ">= 1.20.0"
+kubeVersion: ">= 1.20.0-0"
 maintainers:
   - name: The Piraeus Maintainers
     url: https://github.com/piraeusdatastore
@@ -13,5 +13,5 @@ keywords:
   - storage
 sources:
   - https://github.com/piraeusdatastore/linstor-cluster
-version: 1.0.1
+version: 1.0.2
 appVersion: "v2.4.0"
