@@ -2,6 +2,27 @@ apiVersion: v1
 entries:
   linstor-affinity-controller:
   - apiVersion: v2
+    appVersion: v1.0.2
+    created: "2024-07-02T07:46:56.627889031Z"
+    description: 'Deploys the LINSTOR Affinity Controller. It periodically checks
+      the state of Piraeus/LINSTOR volumes compared to PersistentVolumes (PV), and
+      updates the PV Affinity if changes are detected. '
+    digest: 35afad61f672c510b84eb5c00a13fde679edc7f6c45cb7a5d1d37bb33b9d75d1
+    home: https://github.com/piraeusdatastore/helm-charts
+    icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+    keywords:
+    - storage
+    maintainers:
+    - name: The Piraeus Maintainers
+      url: https://github.com/piraeusdatastore/
+    name: linstor-affinity-controller
+    sources:
+    - https://github.com/piraeusdatastore/linstor-affinity-controller
+    type: application
+    urls:
+    - https://github.com/piraeusdatastore/helm-charts/releases/download/linstor-affinity-controller-1.3.2/linstor-affinity-controller-1.3.2.tgz
+    version: 1.3.2
+  - apiVersion: v2
     appVersion: v1.0.1
     created: "2024-05-02T12:26:12.27058993Z"
     description: 'Deploys the LINSTOR Affinity Controller. It periodically checks
@@ -2218,4 +2239,4 @@ entries:
     urls:
     - https://github.com/piraeusdatastore/helm-charts/releases/download/snapshot-validation-webhook-1.0.0-rc1/snapshot-validation-webhook-1.0.0-rc1.tgz
     version: 1.0.0-rc1
-generated: "2024-06-17T08:53:12.939701656Z"
+generated: "2024-07-02T07:46:56.62807655Z"
