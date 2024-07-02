@@ -62,19 +62,6 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-Default argument for property namespaces, if not set
-*/}}
-{{- define "linstor-affinity-controller.defaultPropertyNamespace" -}}
-{{- if not (hasKey .Values.options "propertyNamespace") }}
-{{- if .Capabilities.APIVersions.Has "piraeus.io/v1/LinstorCluster" }}
-- --property-namespace=Aux/topology
-{{- else if or (.Capabilities.APIVersions.Has "piraeus.linbit.com/v1/LinstorController") (.Capabilities.APIVersions.Has "linstor.linbit.com/v1/LinstorController") }}
-- --property-namespace=Aux
-{{- end }}
-{{- end }}
-{{- end }}
-
-{{/*
 Find the linstor client secret containing TLS certificates
 */}}
 {{- define "linstor-affinity-controller.linstorClientSecretName" -}}

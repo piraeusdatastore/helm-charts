@@ -17,7 +17,7 @@ fullnameOverride: ""
 options:
   v: 1
   leaderElection: true
-  #propertyNamespace: Aux
+  #propertyNamespace: ""
   #reconcileRate: 15s
   #resyncRate: 15m
 
