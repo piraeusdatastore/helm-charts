@@ -20,6 +20,7 @@ options:
   #propertyNamespace: ""
   #reconcileRate: 15s
   #resyncRate: 15m
+  #workers: 10
 
 serviceAccount:
   # Specifies whether a service account should be created
