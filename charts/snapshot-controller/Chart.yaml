@@ -1,7 +1,7 @@
 apiVersion: v2
 type: application
 name: snapshot-controller
-version: 4.0.0
+version: 4.0.1
 appVersion: "v8.2.0"
 kubeVersion: ">= 1.25.0-0"
 icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
