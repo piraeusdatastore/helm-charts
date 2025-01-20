@@ -9,7 +9,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 options:
-  v: 2
+  v: 1
   #drbd-status-interval: 5s
   #fail-over-timeout: 5s
   #operations-timeout: 30s
@@ -17,6 +17,7 @@ options:
   #resync-interval: 15m
   #grace-period-seconds: 10
   #fail-over-unsafe-pods: false
+  #disable-node-taints: false
 
 serviceAccount:
   # Specifies whether a service account should be created

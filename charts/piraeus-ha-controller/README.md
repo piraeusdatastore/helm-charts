@@ -8,21 +8,23 @@ storage.
 
 [Piraeus]: https://piraeus.io
 
-## Usage
+## Get started
 
-First, ensure you have Piraeus/LINSTOR installed with a recent version of DRBD (>9.1.7).
+The Piraeus High Availability Controller is automatically deployed as part of [Piraeus Datastore](https://piraeus.io/docs/stable/).
 
-Then install this chart:
+### Alternative Deployment Methods
+
+The Piraeus High Availability Controller can be deployed through a helm chart.
 
 ```
-helm repo add piraeus-charts https://piraeus.io/helm-charts/
-helm install piraeus-ha-controller piraeus-charts/piraeus-ha-controller
+$ helm repo add piraeus-charts https://piraeus.io/helm-charts/
+$ helm install --create-namespace --namespace piraeus-ha-controller piraeus-ha-controller piraeus-charts/piraeus-ha-controller
 ```
 
 The high availability controller will automatically watch all pods and volumes and start the fail-over process
 should it detect any issues.
 
-We recommend using the following settings in your StorageClass, to take full advantage of the HA Controller:
+When not using Piraeus Datastore through the Piraeus Operator, we recommend the following settings for your StorageClass:
 
 ```
 parameters:
@@ -37,25 +39,48 @@ parameters:
 The Piraeus High Availability Controller itself can be configured using the following flags:
 
 ```
---drbd-status-interval duration    time between DRBD status updates (default 5s)
---fail-over-timeout duration       timeout before starting fail-over process (default 5s)
---grace-period-seconds int         default grace period for deleting k8s objects, in seconds (default 10)
---node-name string                 the name of node this is running on. defaults to the NODE_NAME environment variable (default "n2.k8s-mwa.at.linbit.com")
---operations-timeout duration      default timeout for operations (default 1m0s)
---reconcile-interval duration      maximum interval between reconciliation attempts (default 5s)
+--drbd-status-interval duration    Time between DRBD status updates (default 5s)
+--fail-over-timeout duration       Timeout before starting fail-over process (default 5s)
+--grace-period-seconds int         Default grace period for deleting k8s objects, in seconds (default 10)
+--node-name string                 The name of node this is running on. Defaults to the NODE_NAME environment variable.
+--operations-timeout duration      Default timeout for operations (default 1m0s)
+--reconcile-interval duration      Maximum interval between reconciliation attempts (default 5s)
 --request-timeout string           The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
---resync-interval duration         how often the internal object cache should be resynchronized (default 5m0s)
---v int32                          set log level (default 0)
+--resync-interval duration         How often the internal object cache should be resynchronized (default 5m0s)
+--v int32                          Set log level (default 0)
+--disable-node-taints boolean      When set to true; node taints will not be applied (default false)
 ```
 
-You can directly set them through the helm chart using the matching `options` value.
+To configure the Piraeus High Availability Controller with Piraeus Datastore, edit the
+[`LinstorCluster.spec.highAvailabilityController`](https://piraeus.io/docs/stable/reference/linstorcluster/#spechighavailabilitycontroller):
+
+```yaml
+apiVersion: piraeus.io/v1
+kind: LinstorCluster
+metadata:
+  name: linstorcluster
+spec:
+  highAvailabilityController:
+    podTemplate:
+      spec:
+        containers:
+        - name: ha-controller
+          args:
+          - /agent
+          - --v=4
+          - --fail-over-timeout=30s
+```
+
+If deployed using the helm chart set them through the matching `options` value.
 
 ## What resources are monitored?
 
 The Piraeus High Availability Controller will monitor and manage any Pod that is attached to at least one DRBD resource.
 
-For the HA Controller to work properly, you need quorum, i.e. at least 3 replicas (or 2 replicas + 1 tie-breaker diskless).
-If using lower replica counts, attached Pods will be ignored and are not eligible for faster fail-over.
+When using volumes without quorum capabilities (less than 2 replicas + 1 tie-breaker or quorum manually disabled),
+the fast fail-over capabilities of the HA Controller will not be available.
+
+Other capabilities of the HA Controller will work with any DRBD resource and Pod.
 
 If you want to mark a Pod as exempt from management by the HA Controller, add the following annotation to the Pod:
 
@@ -142,7 +167,7 @@ NAME                                        READY   STATUS              RESTARTS
 my-stateful-app-with-piraeus-0              1/1     Running             0          5m      172.31.0.1        node02.ha.cluster       <none>           <none>
 ```
 
-This process can take up to 15 minutes using the default settings of Kubernetes, or might not even complete at all.
+This process can take up to 15 minutes using the default settings of Kubernetes.
 
 ### The solution
 
