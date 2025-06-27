@@ -31,6 +31,9 @@ spec:
         - name: {{ .Chart.Name }}
           args:
             - /linstor-affinity-controller
+            {{- if .Values.monitoring }}
+            - --metrics-address=:8001
+            {{- end }}
             {{- range $opt, $val := .Values.options }}
             - --{{ $opt | kebabcase }}={{ $val }}
             {{- end }}
@@ -40,6 +43,12 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.monitoring }}
+          ports:
+          - name: metrics
+            protocol: TCP
+            containerPort: 8001
+          {{- end }}
           env:
             - name: LEASE_LOCK_NAME
               value: {{ include "linstor-affinity-controller.fullname" . }}

@@ -65,6 +65,7 @@ The following options can be set on the chart:
 | `serviceAccount.name`         | Sets the name of the service account. If left empty, will use the release name as default    | `""`                                                          |
 | `podDisruptionBudget.enabled` | Enable creation of a pod disruption budget to protect the availability of the scheduler      | `true`                                                        |
 | `autoscaling.enabled`         | Enable creation of a horizontal pod autoscaler to ensure availability in case of high usage` | `"false`                                                      |
+| `monitoring.enabled`          | Enable creation of resources for monitoring via Prometheus Operator                          | `"false"`                                                     |
 
 ***
 
