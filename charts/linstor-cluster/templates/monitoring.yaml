@@ -104,9 +104,9 @@ spec:
     - alert: linstorSatelliteNotOnline
       annotations:
         description: |
-          LINSTOR Satellite "{{`{{ $labels.hostname }}`}}" is not ONLINE.
+          LINSTOR Satellite "{{`{{ $labels.node }}`}}" is not ONLINE.
           Check that the Satellite is running and reachable from the LINSTOR Controller.
-      expr: linstor_node_state{nodetype="SATELLITE"} != 2
+      expr: linstor_node_state{nodetype="SATELLITE"} != 2 and on (node) up{job="{{ .Release.Namespace }}/linstor-satellite"}
       labels:
         severity: critical
     - alert: linstorStoragePoolErrors
@@ -135,21 +135,23 @@ spec:
     - alert: drbdConnectionNotConnected
       annotations:
         description: |
-          DRBD Resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" is not connected to "{{`{{ $labels.conn_name }}`}}": {{`{{ $labels.drbd_connection_state }}`}}.
+          DRBD Resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" is not connected to "{{`{{ $labels.conn_name }}`}}": {{`{{ $labels.drbd_connection_state }}`}}.
       expr: drbd_connection_state{drbd_connection_state!="Connected"} > 0
+      for: 1m
       labels:
         severity: warn
     - alert: drbdDeviceNotUpToDate
       annotations:
         description: |
-          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" has unexpected device state "{{`{{ $labels.drbd_device_state }}`}}".
-      expr: drbd_device_state{drbd_device_state!~"UpToDate|Diskless"} > 0
+          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" has unexpected device state "{{`{{ $labels.drbd_device_state }}`}}".
+      expr: drbd_device_state{drbd_device_state!~"UpToDate|Diskless|Inconsistent"} > 0
+      for: 1m
       labels:
         severity: warn
     - alert: drbdDeviceUnintentionalDiskless
       annotations:
         description: |
-          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" is unintenionally diskless.
+          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" is unintenionally diskless.
           This usually indicates IO errors reported on the backing device. Check the kernel log.
       expr: drbd_device_unintentionaldiskless > 0
       labels:
@@ -157,15 +159,16 @@ spec:
     - alert: drbdDeviceWithoutQuorum
       annotations:
         description: |
-          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" has no quorum.
+          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" has no quorum.
           This usually indicates connectivity issues.
       expr: drbd_device_quorum == 0
+      for: 1m
       labels:
         severity: warn
     - alert: drbdResourceSuspended
       annotations:
         description: |
-          DRBD resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" has been suspended for 1m.
+          DRBD resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" has been suspended for 1m.
       expr: drbd_resource_suspended > 0
       for: 1m
       labels:
@@ -173,10 +176,17 @@ spec:
     - alert: drbdResourceResyncWithoutProgress
       annotations:
         description: |
-          DRBD resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.pod }}`}}" has been in Inconsistent without resync progress for 5 minutes.
+          DRBD resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" has been in Inconsistent without resync progress for 5 minutes.
           This may indicate there is no connection to UpToDate data, or a stuck resync.
-      expr: drbd_device_state{drbd_device_state="Inconsistent"} and delta(drbd_peerdevice_outofsync_bytes[5m])
-        >= 0
+      expr: drbd_device_state{drbd_device_state="Inconsistent"} and delta(drbd_peerdevice_outofsync_bytes[5m]) >= 0
       labels:
         severity: warn
+    - alert: drbdResourceWithNoUpToDateReplicas
+      annotations:
+        description: |
+          DRBD resource "{{`{{ $labels.name }}`}}" has no UpToDate replicas.
+      expr: sum by (name) (drbd_device_state{drbd_device_state="UpToDate"}) == 0
+      for: 1m
+      labels:
+        severity: critical
 {{- end }}

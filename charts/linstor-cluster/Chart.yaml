@@ -13,5 +13,5 @@ keywords:
   - storage
 sources:
   - https://github.com/piraeusdatastore/linstor-cluster
-version: 1.0.2
-appVersion: "v2.4.0"
+version: 1.0.3
+appVersion: "v2.9.0"

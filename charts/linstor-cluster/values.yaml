@@ -15,6 +15,13 @@ linstorCluster: {}
 #              - example.com/no-storage
 #              - example.com/windows
 #
+## Add the following tolerations to all workloads, including LINSTOR Satellites.
+## The usual tolerations for daemonsets are applied automatically
+#  tolerations:
+#  - key: node-role.kubernetes.io/control-plane
+#    operator: Exists
+#    effect: NoSchedule
+#
 ## Instead of pulling from default locations, pull from this registry.
 ## For example drbd.io/linstor-controller would become registry.example.com/linbit-sds/linstor-controller.
 #  repository: registry.example.com/linbit-sds
@@ -160,6 +167,18 @@ linstorSatelliteConfigurations: []
 #      source:
 #        hostDevices:
 #          - /dev/nvme1
+#
+## Configure the way LinstorSatellite resources are deleted.
+##
+## * Evacuate: will start evacuation of the LINSTOR Satellite and wait until it completes before removing the
+##             LinstorSatellite object, comparable to the "linstor node evacuate" command.
+## * Retain: retains the LINSTOR Satellite, keeping it registered in LINSTOR, but removing associated Kubernetes
+##           resources.
+## * Delete: removes the LINSTOR Satellite from the LINSTOR Cluster without prior eviction, comparable to the
+##           "linstor node lost" command.
+##
+## If unset, defaults to the "Retain" behaviour.
+#  deletionPolicy: Evacuate
 #
 ## Override the default Pod template used for the Satellite.
 #  podTemplate:
