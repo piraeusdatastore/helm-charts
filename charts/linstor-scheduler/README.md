@@ -3,8 +3,12 @@
 Deploys a new Kubernetes scheduler, extended by
 the [linstor-scheduler-extender](https://github.com/piraeusdatastore/linstor-scheduler-extender).
 
+> [!IMPORTANT]
+> The LINSTOR Scheduler is no longer maintained. Prefer using `volumeBindingMode: WaitForFirstConsumer` on your
+> StorageClasses.
+
 The schedule is volume placement aware. That means that it prefers placing Pods on the same nodes as any Persistent
-Volume they might use. This works for any setup using LINSTOR, i.e. Piraeus Data-Store or LINBIT SDS.
+Volume they might use. This works for any setup using LINSTOR, i.e. Piraeus Datastore or LINBIT SDS.
 
 ## Installation
 
