@@ -6,7 +6,8 @@
     "linstorSatelliteConfigurations",
     "linstorNodeConnections",
     "monitoring",
-    "storageClasses"
+    "storageClasses",
+    "volumeSnapshotClasses"
   ],
   "properties": {
     "linstorCluster": {
@@ -30,6 +31,60 @@
         "cert-manager",
         "helm"
       ]
+    },
+    "ingress": {
+      "type": "object",
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "ingressClassName": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "host": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "pathType": {
+          "type": "string"
+        },
+        "tls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "hosts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "secretName": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     },
     "linstorSatelliteConfigurations": {
       "type": "array",
@@ -96,13 +151,25 @@
             "type": "boolean"
           },
           "annotations": {
-            "type": "object"
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
           },
           "name": {
             "type": "string"
           },
           "parameters": {
-            "type": "object"
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
           },
           "provisioner": {
             "type": "string"
@@ -112,6 +179,44 @@
           },
           "volumeBindingMode": {
             "type": "string"
+          }
+        }
+      }
+    },
+    "volumeSnapshotClasses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "annotations": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "deletionPolicy": {
+            "type": "string"
+          },
+          "driver": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
           }
         }
       }

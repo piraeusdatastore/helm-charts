@@ -8,6 +8,9 @@ LinstorNodeConnection: {{ .name }}
 {{- range .Values.storageClasses }}
 StorageClass: {{ .name }}
 {{- end }}
+{{- range .Values.volumeSnapshotClasses }}
+VolumeSnapshotClass: {{ .name }}
+{{- end }}
 
 Successfully deployed!
 

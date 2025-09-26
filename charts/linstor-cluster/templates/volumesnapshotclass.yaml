@@ -1,0 +1,22 @@
+{{- range .Values.volumeSnapshotClasses }}
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: {{ .name }}
+{{- if .annotations }}
+  annotations:
+    {{- toYaml .annotations | nindent 4 }}
+{{- end }}
+  labels:
+    {{- include "linstor-cluster.labels" $ | nindent 4 }}
+{{- if .labels }}
+    {{- toYaml .labels | nindent 4 }}
+{{- end }}
+driver: {{ .driver | default "linstor.csi.linbit.com" }}
+deletionPolicy: {{ .deletionPolicy | default "Delete" }}
+{{- if .parameters }}
+parameters:
+  {{- toYaml .parameters | nindent 2 }}
+{{- end }}
+{{- end }}

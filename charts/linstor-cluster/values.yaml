@@ -112,6 +112,35 @@ createApiTLS: ""
 # * "cert-manager" will create a self-signed CA provisioner using a cert-manager.io Issuer.
 createInternalTLS: ""
 
+# Create an ingress resource to expose the LINSTOR Controller outside the cluster.
+ingress:
+  # Enable the ingress resource.
+  enabled: false
+  # Ingress class to use.
+  ingressClassName: ""
+  # Additional labels to set on the ingress resource.
+  labels: {}
+  # Additional annotations to set on the ingress resource, such as for TLS certificates from cert-manager or ingress
+  # controller specific settings:
+  # annotations:
+  #    cert-manager.io/cluster-issuer: lets-encrypt
+  #    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  #    nginx.ingress.kubernetes.io/proxy-ssl-secret: piraeus-datastore/linstor-client-tls
+  #    nginx.ingress.kubernetes.io/proxy-ssl-name: linstor-controller
+  annotations: {}
+
+  # Default host for the ingress resource
+  host: linbit-sds.local
+  # On which path the LINSTOR Controller should be exposed on
+  path: /
+  # The path type determining how the path is interpreted.
+  pathType: ImplementationSpecific
+  # Set TLS for the ingress resource.
+  tls: []
+  # - hosts:
+  #   - linbit-sds.local
+  #   secretName: preprovisioned-secret
+
 # Definition of linstorSatelliteConfigurations
 # Ref https://github.com/piraeusdatastore/piraeus-operator/blob/v2/docs/reference/linstorsatelliteconfiguration.md
 linstorSatelliteConfigurations: []
@@ -236,6 +265,8 @@ storageClasses: []
 #  - name: linstor-r01
 #    annotations:
 #      storageclass.kubernetes.io/is-default-class: "true"
+#    labels:
+#      example.com/storage-class: "true"
 #    reclaimPolicy: Delete
 #    allowVolumeExpansion: true
 #    volumeBindingMode: WaitForFirstConsumer
@@ -244,3 +275,22 @@ storageClasses: []
 #      linstor.csi.linbit.com/autoPlace: "1"
 #      linstor.csi.linbit.com/storagePool: lvm-thin
 #      linstor.csi.linbit.com/allowRemoteVolumeAccess: "false"
+
+# List of volumeSnapshotClasses. You can create different vsclasses with different parameters.
+volumeSnapshotClasses: []
+#  - name: linstor-snapshot1
+#    annotations:
+#      velero.io/csi-volumesnapshot-class: ""
+#    labels:
+#      example.com/snapshot-class: "true"
+#    driver: linstor.csi.linbit.com
+#    deletionPolicy: Delete
+#    parameters:
+#      snap.linstor.csi.linbit.com/type: S3
+#      snap.linstor.csi.linbit.com/allow-incremental: "false"
+#      snap.linstor.csi.linbit.com/remote-name: my-remote
+#      snap.linstor.csi.linbit.com/s3-bucket: my-bucket
+#      snap.linstor.csi.linbit.com/s3-endpoint: s3.example.com
+#      snap.linstor.csi.linbit.com/s3-signing-region: example
+#      csi.storage.k8s.io/snapshotter-secret-name: linstor-csi-s3-access
+#      csi.storage.k8s.io/snapshotter-secret-namespace: piraeus-datastore
