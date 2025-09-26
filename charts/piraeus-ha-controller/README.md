@@ -6,13 +6,14 @@
 The Piraeus High Availability Controller will speed up the fail-over process for stateful workloads using [Piraeus] for
 storage.
 
+> [!IMPORTANT]
+> The Piraeus High Availability Controller is deployed as part of, and does not need to be deployed separately
+> when using [Piraeus Operator].
+
 [Piraeus]: https://piraeus.io
+[Piraeus Operator]: https://piraeus.io/docs/
 
 ## Get started
-
-The Piraeus High Availability Controller is automatically deployed as part of [Piraeus Datastore](https://piraeus.io/docs/stable/).
-
-### Alternative Deployment Methods
 
 The Piraeus High Availability Controller can be deployed through a helm chart.
 
