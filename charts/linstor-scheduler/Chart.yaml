@@ -16,5 +16,6 @@ home: https://github.com/piraeusdatastore/helm-charts
 sources:
   - https://github.com/piraeusdatastore/linstor-scheduler-extender
 
-version: 0.2.2
+version: 0.2.3
 appVersion: "v0.3.2"
+deprecated: true
