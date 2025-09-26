@@ -14,5 +14,6 @@ home: https://github.com/piraeusdatastore/helm-charts
 sources:
   - https://github.com/piraeusdatastore/piraeus-ha-controller
 
-version: 1.3.0
+version: 1.3.1
 appVersion: "v1.3.0"
+deprecated: true
