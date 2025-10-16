@@ -7,7 +7,8 @@
     "linstorNodeConnections",
     "monitoring",
     "storageClasses",
-    "volumeSnapshotClasses"
+    "volumeSnapshotClasses",
+    "volumeGroupSnapshotClasses"
   ],
   "properties": {
     "linstorCluster": {
@@ -184,6 +185,44 @@
       }
     },
     "volumeSnapshotClasses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "annotations": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "deletionPolicy": {
+            "type": "string"
+          },
+          "driver": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "volumeGroupSnapshotClasses": {
       "type": "array",
       "items": {
         "type": "object",
