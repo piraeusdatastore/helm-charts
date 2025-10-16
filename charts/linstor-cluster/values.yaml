@@ -280,9 +280,9 @@ storageClasses: []
 volumeSnapshotClasses: []
 #  - name: linstor-snapshot1
 #    annotations:
-#      velero.io/csi-volumesnapshot-class: ""
+#      snapshot.storage.kubernetes.io/is-default-class: "true"
 #    labels:
-#      example.com/snapshot-class: "true"
+#      velero.io/csi-volumesnapshot-class: "true"
 #    driver: linstor.csi.linbit.com
 #    deletionPolicy: Delete
 #    parameters:
@@ -294,3 +294,15 @@ volumeSnapshotClasses: []
 #      snap.linstor.csi.linbit.com/s3-signing-region: example
 #      csi.storage.k8s.io/snapshotter-secret-name: linstor-csi-s3-access
 #      csi.storage.k8s.io/snapshotter-secret-namespace: piraeus-datastore
+
+# List of volumeGroupSnapshotClasses. You can create different vgsclasses with different parameters.
+volumeGroupSnapshotClasses: []
+#  - name: linstor-snapshot1
+#    annotations:
+#      groupsnapshot.storage.kubernetes.io/is-default-class: "true"
+#    labels:
+#      velero.io/csi-volumegroupsnapshot-class: "true"
+#    driver: linstor.csi.linbit.com
+#    deletionPolicy: Delete
+#    parameters:
+#      snap.linstor.csi.linbit.com/type: InCluster
