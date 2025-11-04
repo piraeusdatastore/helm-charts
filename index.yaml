@@ -658,6 +658,30 @@ entries:
     version: 1.0.1
   snapshot-controller:
   - apiVersion: v2
+    appVersion: v8.4.0
+    created: "2025-11-04T06:47:31.093897042Z"
+    description: 'Deploys a Snapshot Controller in a cluster. Snapshot Controllers
+      are often bundled with the Kubernetes distribution, this chart is meant for
+      cases where it is not. '
+    digest: 6b9e6e66120e4126f79258f4d10079d445f32dded94fe6ff5f276a6ae3b5cdc9
+    home: https://github.com/piraeusdatastore/helm-charts
+    icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+    keywords:
+    - storage
+    - snapshot
+    - validation
+    kubeVersion: '>= 1.25.0-0'
+    maintainers:
+    - name: The Piraeus Maintainers
+      url: https://github.com/piraeusdatastore/
+    name: snapshot-controller
+    sources:
+    - https://github.com/kubernetes-csi/external-snapshotter/
+    type: application
+    urls:
+    - https://github.com/piraeusdatastore/helm-charts/releases/download/snapshot-controller-4.2.0/snapshot-controller-4.2.0.tgz
+    version: 4.2.0
+  - apiVersion: v2
     appVersion: v8.3.0
     created: "2025-10-17T12:18:49.897746997Z"
     description: 'Deploys a Snapshot Controller in a cluster. Snapshot Controllers
@@ -2574,4 +2598,4 @@ entries:
     urls:
     - https://github.com/piraeusdatastore/helm-charts/releases/download/snapshot-validation-webhook-1.0.0-rc1/snapshot-validation-webhook-1.0.0-rc1.tgz
     version: 1.0.0-rc1
-generated: "2025-10-17T12:18:49.898458596Z"
+generated: "2025-11-04T06:47:31.094292743Z"
