@@ -8,7 +8,9 @@ metadata:
 data:
 {{- if semverCompare ">= 1.22-0" (include "linstor-scheduler.kubeVersion" .) }}
   scheduler-config.yaml: |-
-{{- if semverCompare ">= 1.23-0" (include "linstor-scheduler.kubeVersion" .) }}
+{{- if semverCompare ">= 1.25-0" (include "linstor-scheduler.kubeVersion" .) }}
+      apiVersion: kubescheduler.config.k8s.io/v1
+{{- else if semverCompare ">= 1.23-0" (include "linstor-scheduler.kubeVersion" .) }}
       apiVersion: kubescheduler.config.k8s.io/v1beta3
 {{- else }}
       apiVersion: kubescheduler.config.k8s.io/v1beta2
