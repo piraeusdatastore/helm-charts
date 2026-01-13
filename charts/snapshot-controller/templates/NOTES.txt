@@ -2,6 +2,14 @@
 Volume Snapshot Controller installed.
 {{- end }}
 
+{{- range concat .Values.volumeSnapshotClasses }}
+Volume Snapshot Class "{{ .name }}" installed.
+{{- end }}
+{{- range concat .Values.volumeGroupSnapshotClasses }}
+Volume Group Snapshot Class "{{ .name }}" installed.
+{{- end }}
+
+
 {{- if and (not (.Capabilities.APIVersions.Has "snapshot.storage.k8s.io/v1")) (not (.Capabilities.APIVersions.Has "snapshot.storage.k8s.io/v1beta1") ) }}
 Please install the snapshot CRDs, otherwise the controller will not run.
 
