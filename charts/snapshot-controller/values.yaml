@@ -62,24 +62,6 @@ controller:
     # Specifies whether a ServiceMonitor should be created
     create: false
 
-  volumeSnapshotClasses: []
-#    - name: linstor-csi-delete
-#      annotations:
-#        snapshot.storage.kubernetes.io/is-default-class: "true"
-#      labels:
-#        velero.io/csi-volumesnapshot-class: "true"
-#      driver: linstor.csi.linbit.com
-#      deletionPolicy: Delete
-
-  volumeGroupSnapshotClasses: []
-#    - name: linstor-csi-delete
-#      annotations:
-#        groupsnapshot.storage.kubernetes.io/is-default-class: "true"
-#      labels:
-#        velero.io/csi-volumegroupsnapshot-class: "true"
-#      driver: linstor.csi.linbit.com
-#      deletionPolicy: Delete
-
   priorityClassName: ""
     # Specifies wether a Priority Class should be attached to deployment pods
 
@@ -91,3 +73,21 @@ controller:
   # DNS Policy for controller pod. For Pods running with hostNetwork, set to `ClusterFirstWithHostNet`
   # For further reference: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy.
   dnsPolicy: ClusterFirst
+
+volumeSnapshotClasses: []
+  #    - name: linstor-csi-delete
+  #      annotations:
+  #        snapshot.storage.kubernetes.io/is-default-class: "true"
+  #      labels:
+  #        velero.io/csi-volumesnapshot-class: "true"
+  #      driver: linstor.csi.linbit.com
+  #      deletionPolicy: Delete
+
+volumeGroupSnapshotClasses: []
+#    - name: linstor-csi-delete
+#      annotations:
+#        groupsnapshot.storage.kubernetes.io/is-default-class: "true"
+#      labels:
+#        velero.io/csi-volumegroupsnapshot-class: "true"
+#      driver: linstor.csi.linbit.com
+#      deletionPolicy: Delete
