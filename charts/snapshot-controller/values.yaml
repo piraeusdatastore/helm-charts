@@ -5,6 +5,8 @@ controller:
 
   revisionHistoryLimit: 10
 
+  fullnameOverride: ""
+
   args:
     leaderElection: true
     leaderElectionNamespace: "$(NAMESPACE)"
