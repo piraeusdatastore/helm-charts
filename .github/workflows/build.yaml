@@ -1,0 +1,78 @@
+# Until https://github.com/kubernetes-csi/external-snapshotter/issues/1358 is fixed
+name: Build container image
+on:
+  push:
+    branches:
+    - master
+    paths:
+    - charts/snapshot-controller/values.yaml
+    - charts/snapshot-controller/webhook.dockerfile
+  pull_request:
+    paths:
+    - charts/snapshot-controller/values.yaml
+    - charts/snapshot-controller/webhook.dockerfile
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+    - uses: actions/checkout@v6
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: linux/amd64,linux/arm64
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Set up cosign
+      if: ${{ github.event_name != 'pull_request' }}
+      uses: sigstore/cosign-installer@v3
+    - name: Parse snapshot-controller app version
+      id: version
+      run: |
+        echo "version=$(yq e '.appVersion' ./charts/snapshot-controller/Chart.yaml)" >> "$GITHUB_OUTPUT"
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/piraeusdatastore/snapshot-conversion-webhook
+        tags: |
+          type=raw,value=${{ steps.version.outputs.version }}
+          type=sha
+        labels: |
+          org.opencontainers.image.description=Converts between the VolumeGroupSnapshotContent v1beta1 API to and from the v1beta2 API.
+          org.opencontainers.image.title=snapshot-conversion-webhook
+          org.opencontainers.image.url=https://github.com/kubernetes-csi/external-snapshotter
+        annotations: |
+          org.opencontainers.image.description=Converts between the VolumeGroupSnapshotContent v1beta1 API to and from the v1beta2 API.
+          org.opencontainers.image.title=snapshot-conversion-webhook
+          org.opencontainers.image.url=https://github.com/kubernetes-csi/external-snapshotter
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      id: build
+      with:
+        platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+        builder: ${{ steps.buildx.outputs.name }}
+        context: ./charts/snapshot-controller
+        file: ./charts/snapshot-controller/webhook.dockerfile
+        tags: ${{ steps.meta.outputs.tags }}
+        annotations: ${{ steps.meta.outputs.annotations }}
+        labels: ${{steps.meta.outputs.labels }}
+        push: ${{ github.event_name != 'pull_request' }}
+        build-args: VERSION=${{ steps.version.outputs.version }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        provenance: mode=max
+        sbom: true
+    - name: Sign images
+      if: ${{ github.event_name != 'pull_request' }}
+      env:
+        DIGEST: ${{ steps.build.outputs.digest }}
+        TAGS: ${{ steps.meta.outputs.tags }}
+      run: |
+        images=""
+        for tag in ${TAGS}; do
+          images+="${tag}@${DIGEST} "
+        done
+        cosign sign --yes ${images}
