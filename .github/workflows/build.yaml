@@ -3,8 +3,9 @@ name: Build container image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
+    - .github/workflows/build.yaml
     - charts/snapshot-controller/values.yaml
     - charts/snapshot-controller/webhook.dockerfile
   pull_request:
