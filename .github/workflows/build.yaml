@@ -16,7 +16,9 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      contents: read  # For accessing the repository
+      packages: write # For pushing to ghcr.io
+      id-token: write # For signing
     steps:
     - uses: actions/checkout@v6
     - name: Set up QEMU
