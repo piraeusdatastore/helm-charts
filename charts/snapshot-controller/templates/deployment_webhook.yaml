@@ -43,7 +43,7 @@ spec:
             {{- end }}
           ports:
             - name: https
-              containerPort: 443
+              containerPort: {{ .Values.webhook.args.port }}
               protocol: TCP
           livenessProbe:
             httpGet:

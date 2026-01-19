@@ -9,7 +9,7 @@ metadata:
 spec:
   ports:
     - port: 443
-      targetPort: 443
+      targetPort: {{ .Values.webhook.args.port }}
       name: https
   selector:
     {{- include "conversion-webhook.selectorLabels" . | nindent 4 }}

@@ -95,6 +95,7 @@ webhook:
     certManagerIssuerRef: {}
 
   args:
+    port: 8443
     tlsCertFile: /etc/webhook/tls.crt
     tlsPrivateKeyFile: /etc/webhook/tls.key
 
