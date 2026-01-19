@@ -47,4 +47,6 @@ data:
   tls.crt: {{ $crt }}
 {{- end }}
 ---
+{{- if .Values.installCRDs }}
 {{ tpl (.Files.Get "crds.yaml") (dict "Namespace" .Release.Namespace "CaBundle" $ca "ServiceName" (include "conversion-webhook.fullname" .) "CertificateName" (include "conversion-webhook.certifcateName" .)) }}
+{{- end }}
