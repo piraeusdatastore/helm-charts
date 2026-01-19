@@ -93,6 +93,10 @@ webhook:
     renew: false
     # Issuer to pass to the Certificate
     certManagerIssuerRef: {}
+    # PEM-Encoded content of ca.crt, tls.crt and tls.key. If set, Helm will not autogenerate the request.
+    caBundle: ""
+    certificate: ""
+    key: ""
 
   args:
     port: 8443

@@ -22,7 +22,11 @@ spec:
     rotationPolicy: Always
 ---
 {{- else if .Values.webhook.tls.autogenerate }}
-  {{- if and $secret (not .Values.webhook.tls.renew) }}
+  {{- if or .Values.webhook.tls.caBundle .Values.webhook.tls.certificate .Values.webhook.tls.key }}
+    {{- $ca = b64enc .Values.webhook.tls.caBundle }}
+    {{- $key = b64enc .Values.webhook.tls.key }}
+    {{- $crt = b64enc .Values.webhook.tls.certificate }}
+  {{- else if and $secret (not .Values.webhook.tls.renew) }}
     {{- $ca = get $secret.data "ca.crt" }}
     {{- $key = get $secret.data "tls.key" }}
     {{- $crt = get $secret.data "tls.crt" }}
@@ -48,5 +52,13 @@ data:
 {{- end }}
 ---
 {{- if .Values.installCRDs }}
-{{ tpl (.Files.Get "crds.yaml") (dict "Namespace" .Release.Namespace "CaBundle" $ca "ServiceName" (include "conversion-webhook.fullname" .) "CertificateName" (include "conversion-webhook.certifcateName" .)) }}
+{{- $insertCaFrom := "" }}
+{{- if .Values.webhook.tls.certManagerIssuerRef }}
+{{- $insertCaFrom = printf "%s/%s" .Release.Namespace (include "conversion-webhook.certifcateName" .) }}
+{{- end }}
+{{- $clientConfig := dict "service" (dict "namespace" .Release.Namespace "name" (include "conversion-webhook.fullname" .) "path" "/convert") }}
+{{- if $ca }}
+{{- $clientConfig = set $clientConfig "caBundle" $ca }}
+{{- end }}
+{{ tpl (.Files.Get "crds.yaml") (dict "ClientConfig" $clientConfig "InsertCaFrom" $insertCaFrom) }}
 {{- end }}

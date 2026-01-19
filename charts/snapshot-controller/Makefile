@@ -12,7 +12,8 @@ crds:
 		curl -fsSL https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/$(APP_VERSION)/client/config/crd/groupsnapshot.storage.k8s.io_volumegroupsnapshotclasses.yaml ;\
 		curl -fsSL https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/$(APP_VERSION)/client/config/crd/groupsnapshot.storage.k8s.io_volumegroupsnapshotcontents.yaml ;\
 		curl -fsSL https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/$(APP_VERSION)/client/config/crd/groupsnapshot.storage.k8s.io_volumegroupsnapshots.yaml \
-	) | yq 'select(.spec.conversion).spec.conversion.webhook.clientConfig.service |= {"namespace": "{{ .Namespace }}", "name": "{{ .ServiceName }}", "path": .path}' \
-	  | yq 'select(.spec.conversion).spec.conversion.webhook.clientConfig.caBundle = "{{ .CaBundle }}"' \
-	  | yq 'select(.spec.conversion).metadata.annotations["cert-manager.io/inject-ca-from"] = "{{ .Namespace }}/{{ .CertificateName }}"' \
+	) | yq 'select(.spec.conversion).spec.conversion.webhook.clientConfig = "{{ toJson .ClientConfig }}"' \
+	  | yq 'select(.spec.conversion).metadata.annotations["cert-manager.io/inject-ca-from"] = "{{ .InsertCaFrom }}"' \
+	  | sed -e "s/'{{ toJson .ClientConfig }}'/{{ toJson .ClientConfig }}/" \
+	  | sed -e "s#\(cert-manager.io/inject-ca-from.*\)#{{ if .InsertCaFrom }}cert-manager.io/inject-ca-from: '{{ .InsertCaFrom }}'{{ end }}#" \
 	  > crds.yaml
