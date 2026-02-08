@@ -21,6 +21,31 @@ helm repo add piraeus-charts https://piraeus.io/helm-charts/
 helm install snapshot-controller piraeus-charts/snapshot-controller
 ```
 
+## Using cert-manager
+The following configuration allows you to create [cert-manager](https://cert-manager.io/docs/configuration/issuers/) certificates for the webhook.
+
+First create an issuer for selfsigned certificates in the namespace of the snapshot-controller installation:
+```YAML
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned
+spec:
+  selfSigned: {}
+```
+
+After that we can configure the webhook (values.yaml):
+```YAML
+webhook:
+  tls:
+    # disable tls generation with helm
+    autogenerate: false
+    # configure certManager issuer
+    certManagerIssuerRef: 
+      name: selfsigned
+      kind: Issuer
+```
+
 ## Upgrades
 
 Upgrades can be done using the normal Helm upgrade mechanism
