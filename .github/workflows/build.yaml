@@ -6,10 +6,13 @@ on:
     - main
     paths:
     - .github/workflows/build.yaml
+    - charts/snapshot-controller/Chart.yaml
     - charts/snapshot-controller/values.yaml
     - charts/snapshot-controller/webhook.dockerfile
   pull_request:
     paths:
+    - .github/workflows/build.yaml
+    - charts/snapshot-controller/Chart.yaml
     - charts/snapshot-controller/values.yaml
     - charts/snapshot-controller/webhook.dockerfile
 jobs:
