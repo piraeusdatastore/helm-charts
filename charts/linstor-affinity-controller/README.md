@@ -1,5 +1,11 @@
 # LINSTOR Affinity Controller
 
+> [!IMPORTANT]
+> The LINSTOR Affinity Controller is deployed as part of, and does not need to be deployed separately
+> when using [Piraeus Operator].
+
+[Piraeus Operator]: https://piraeus.io/docs/
+
 The LINSTOR Affinity Controller keeps the affinity of your volumes in sync between Kubernetes and LINSTOR.
 
 Affinity is used by Kubernetes to track on which node a specific resource can be accessed. For example, you can use
