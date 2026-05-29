@@ -2,5 +2,38 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "github-actions": {
+    "enabled": false
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^charts/snapshot-controller/Chart\\.yaml$"],
+      "matchStrings": ["appVersion: \"(?<currentValue>[^\"]+)\""],
+      "depNameTemplate": "registry.k8s.io/sig-storage/snapshot-controller",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^charts/linstor-affinity-controller/Chart\\.yaml$"],
+      "matchStrings": ["appVersion: \"(?<currentValue>[^\"]+)\""],
+      "depNameTemplate": "quay.io/piraeusdatastore/linstor-affinity-controller",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^charts/piraeus-ha-controller/Chart\\.yaml$"],
+      "matchStrings": ["appVersion: \"(?<currentValue>[^\"]+)\""],
+      "depNameTemplate": "quay.io/piraeusdatastore/piraeus-ha-controller",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^charts/linstor-scheduler/Chart\\.yaml$"],
+      "matchStrings": ["appVersion: \"(?<currentValue>[^\"]+)\""],
+      "depNameTemplate": "quay.io/piraeusdatastore/linstor-scheduler-extender",
+      "datasourceTemplate": "docker"
+    }
   ]
 }
