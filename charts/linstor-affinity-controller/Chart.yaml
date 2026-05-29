@@ -15,5 +15,5 @@ sources:
   - https://github.com/piraeusdatastore/linstor-affinity-controller
 
 deprecated: true
-version: 1.6.0
-appVersion: "v1.4.0"
+version: 1.6.1
+appVersion: "v1.4.1"
