@@ -1,0 +1,195 @@
+suite: admission webhook
+templates:
+  - templates/admission-deployment.yaml
+  - templates/admission-webhook.yaml
+  - templates/admission-certmanager.yaml
+  - templates/admission-service.yaml
+  - templates/admission-serviceaccount.yaml
+  - templates/admission-poddisruptionbudget.yaml
+set:
+  linstor.endpoint: http://linstor.example.com:3370
+tests:
+  - it: renders no admission resources when disabled
+    set:
+      admission.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: cert-manager mode emits the issuer/cert chain
+    set:
+      admission.enabled: true
+      admission.createTLS: cert-manager
+    asserts:
+      - hasDocuments:
+          count: 4
+        template: templates/admission-certmanager.yaml
+      - documentIndex: 1
+        template: templates/admission-certmanager.yaml
+        isKind:
+          of: Certificate
+      - documentIndex: 1
+        template: templates/admission-certmanager.yaml
+        equal:
+          path: spec.privateKey.rotationPolicy
+          value: Never
+
+  - it: cert-manager mode injects the CA and sets no inline caBundle
+    set:
+      admission.enabled: true
+      admission.createTLS: cert-manager
+    asserts:
+      - template: templates/admission-webhook.yaml
+        isNotEmpty:
+          path: metadata.annotations["cert-manager.io/inject-ca-from"]
+      - template: templates/admission-webhook.yaml
+        notExists:
+          path: webhooks[0].clientConfig.caBundle
+
+  - it: helm mode emits a TLS Secret and an inline caBundle
+    set:
+      admission.enabled: true
+      admission.createTLS: helm
+    asserts:
+      - documentIndex: 0
+        template: templates/admission-webhook.yaml
+        isKind:
+          of: Secret
+      - documentIndex: 0
+        template: templates/admission-webhook.yaml
+        equal:
+          path: type
+          value: kubernetes.io/tls
+      - documentIndex: 1
+        template: templates/admission-webhook.yaml
+        isNotEmpty:
+          path: webhooks[0].clientConfig.caBundle
+
+  - it: bring-your-own mode mounts the external secret and generates nothing
+    set:
+      admission.enabled: true
+      admission.createTLS: ""
+      admission.tls.secretName: my-external-tls
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: templates/admission-certmanager.yaml
+      - template: templates/admission-deployment.yaml
+        equal:
+          path: spec.template.spec.volumes[?(@.name=="webhook-certs")].secret.secretName
+          value: my-external-tls
+
+  - it: fails on an unknown createTLS value
+    set:
+      admission.enabled: true
+      admission.createTLS: bogus
+    asserts:
+      - template: templates/admission-webhook.yaml
+        failedTemplate:
+          errorPattern: "admission.createTLS must be one of"
+
+  - it: fails when bring-your-own mode has neither secretName nor caBundle
+    set:
+      admission.enabled: true
+      admission.createTLS: ""
+    asserts:
+      - template: templates/admission-webhook.yaml
+        failedTemplate:
+          errorPattern: "bring your own TLS"
+
+  - it: gives the webhook pods a distinct name so the base selectors do not match
+    set:
+      admission.enabled: true
+      admission.createTLS: cert-manager
+    asserts:
+      - template: templates/admission-deployment.yaml
+        equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/name"]
+          value: linstor-scheduler-admission
+
+  - it: sets readiness and liveness probes and a dedicated service account
+    set:
+      admission.enabled: true
+      admission.createTLS: cert-manager
+    asserts:
+      - template: templates/admission-deployment.yaml
+        exists:
+          path: spec.template.spec.containers[0].readinessProbe
+      - template: templates/admission-deployment.yaml
+        exists:
+          path: spec.template.spec.containers[0].livenessProbe
+      - template: templates/admission-deployment.yaml
+        equal:
+          path: spec.template.spec.serviceAccountName
+          value: RELEASE-NAME-linstor-scheduler-admission
+
+  - it: passes the scheduler and driver flags to the webhook binary
+    set:
+      admission.enabled: true
+      admission.createTLS: cert-manager
+      admission.driver: my.csi.driver
+    asserts:
+      - template: templates/admission-deployment.yaml
+        contains:
+          path: spec.template.spec.containers[0].args
+          content: -scheduler=RELEASE-NAME-linstor-scheduler
+      - template: templates/admission-deployment.yaml
+        contains:
+          path: spec.template.spec.containers[0].args
+          content: -driver=my.csi.driver
+
+  - it: adds Reloader annotations only when reloadOnCertChange is enabled
+    set:
+      admission.enabled: true
+      admission.createTLS: cert-manager
+      admission.reloadOnCertChange: true
+    asserts:
+      - template: templates/admission-deployment.yaml
+        equal:
+          path: metadata.annotations["secret.reloader.stakater.com/reload"]
+          value: RELEASE-NAME-linstor-scheduler-admission-tls
+
+  - it: omits Reloader annotations by default
+    set:
+      admission.enabled: true
+      admission.createTLS: cert-manager
+    asserts:
+      - template: templates/admission-deployment.yaml
+        notExists:
+          path: metadata.annotations["secret.reloader.stakater.com/reload"]
+
+  - it: keeps the -admission suffix even for a maximum-length nameOverride
+    set:
+      admission.enabled: true
+      admission.createTLS: cert-manager
+      # 63-char nameOverride: the base name is truncated to 53 before the suffix
+      # so "-admission" always survives and the webhook stays isolated from the
+      # base scheduler's immutable selectors.
+      nameOverride: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    asserts:
+      - template: templates/admission-deployment.yaml
+        matchRegex:
+          path: spec.selector.matchLabels["app.kubernetes.io/name"]
+          pattern: -admission$
+      - template: templates/admission-deployment.yaml
+        matchRegex:
+          path: spec.selector.matchLabels["app.kubernetes.io/name"]
+          pattern: ^.{1,63}$
+
+  - it: keeps admission resource names within 63 chars for a long release name
+    release:
+      name: supercalifragilisticexpialidociousaligator
+    set:
+      admission.enabled: true
+      admission.createTLS: cert-manager
+    asserts:
+      - documentIndex: 0
+        template: templates/admission-certmanager.yaml
+        matchRegex:
+          path: metadata.name
+          pattern: -admission-selfsigned$
+      - documentIndex: 0
+        template: templates/admission-certmanager.yaml
+        matchRegex:
+          path: metadata.name
+          pattern: ^.{1,63}$
