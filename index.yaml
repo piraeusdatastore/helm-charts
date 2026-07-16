@@ -420,6 +420,29 @@ entries:
     version: 0.0.1
   linstor-scheduler:
   - apiVersion: v2
+    appVersion: v0.3.6
+    created: "2026-07-16T12:09:52.164636047Z"
+    deprecated: true
+    description: 'Deploys a new kubernetes scheduler, configured to take advantage
+      of storage system information. If a Pod is using a LINSTOR volume, the scheduler
+      will prefer nodes with local data instead of accessing the data via a DRBD diskless. '
+    digest: 825e8413b0ed2ed8d2b812a7a1e505b7547dd35e0b505f599421a6d8615e9c2a
+    home: https://github.com/piraeusdatastore/helm-charts
+    icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+    keywords:
+    - storage
+    - scheduler
+    maintainers:
+    - name: The Piraeus Maintainers
+      url: https://github.com/piraeusdatastore/
+    name: linstor-scheduler
+    sources:
+    - https://github.com/piraeusdatastore/linstor-scheduler-extender
+    type: application
+    urls:
+    - https://github.com/piraeusdatastore/helm-charts/releases/download/linstor-scheduler-0.3.1/linstor-scheduler-0.3.1.tgz
+    version: 0.3.1
+  - apiVersion: v2
     appVersion: v0.3.5
     created: "2026-07-15T12:08:30.658698858Z"
     deprecated: true
@@ -2967,4 +2990,4 @@ entries:
     urls:
     - https://github.com/piraeusdatastore/helm-charts/releases/download/snapshot-validation-webhook-1.0.0-rc1/snapshot-validation-webhook-1.0.0-rc1.tgz
     version: 1.0.0-rc1
-generated: "2026-07-15T12:09:29.280592148Z"
+generated: "2026-07-16T12:09:52.166015097Z"
