@@ -16,4 +16,6 @@ crds:
 	  | yq '(select(.metadata.name == "volumegroupsnapshotcontents.groupsnapshot.storage.k8s.io") | .metadata.annotations["cert-manager.io/inject-ca-from"]) = "{{ .InsertCaFrom }}"' \
 	  | sed -e "s/'{{ toJson .ClientConfig }}'/{{ toJson .ClientConfig }}/" \
 	  | sed -e "s#\(cert-manager.io/inject-ca-from.*\)#{{ if .InsertCaFrom }}cert-manager.io/inject-ca-from: '{{ .InsertCaFrom }}'{{ end }}#" \
+	  | sed -e 's#^  conversion:$$#{{- if .WebhookEnabled }}\n  conversion:#' \
+	  | sed -e 's#^      clientConfig: {{ toJson .ClientConfig }}$$#      clientConfig: {{ toJson .ClientConfig }}\n{{- end }}#' \
 	  > crds.yaml

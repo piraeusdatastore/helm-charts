@@ -3,6 +3,7 @@
 {{ $ca := "" }}
 {{ $key := "" }}
 {{ $crt := "" }}
+{{- if .Values.webhook.enabled }}
 {{- if .Values.webhook.tls.certManagerIssuerRef }}
 ---
 apiVersion: cert-manager.io/v1
@@ -50,15 +51,16 @@ data:
   tls.key: {{ $key }}
   tls.crt: {{ $crt }}
 {{- end }}
+{{- end }}
 ---
 {{- if .Values.installCRDs }}
 {{- $insertCaFrom := "" }}
-{{- if .Values.webhook.tls.certManagerIssuerRef }}
+{{- if and .Values.webhook.enabled .Values.webhook.tls.certManagerIssuerRef }}
 {{- $insertCaFrom = printf "%s/%s" .Release.Namespace (include "conversion-webhook.certifcateName" .) }}
 {{- end }}
 {{- $clientConfig := dict "service" (dict "namespace" .Release.Namespace "name" (include "conversion-webhook.fullname" .) "path" "/convert") }}
 {{- if $ca }}
 {{- $clientConfig = set $clientConfig "caBundle" $ca }}
 {{- end }}
-{{ tpl (.Files.Get "crds.yaml") (dict "ClientConfig" $clientConfig "InsertCaFrom" $insertCaFrom) }}
+{{ tpl (.Files.Get "crds.yaml") (dict "ClientConfig" $clientConfig "InsertCaFrom" $insertCaFrom "WebhookEnabled" .Values.webhook.enabled) }}
 {{- end }}

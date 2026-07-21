@@ -60,8 +60,10 @@ helm upgrade snapshot-controller piraeus-charts/snapshot-controller
 The following changes have been made when moving to Chart v5.0.0+:
 
 * CRDs are deployed as part of the regular resource. Installation can be controlled using the `installCRDs` value.
-* The Snapshot Conversion Webhook is deployed by default to convert Volume Group Snapshot Content between v1beta1 and
-  v1beta2.
+* The Snapshot Conversion Webhook can be deployed to convert Volume Group Snapshot Content between v1beta1 and
+  v1beta2. It is disabled by default; enable it with `webhook.enabled=true` only if your cluster still holds group
+  snapshot objects in those older API versions. When disabled, no conversion strategy is injected into the
+  volumegroupsnapshotcontents CRD (it defaults to `None`, matching upstream).
 * `volumeSnapshotClasses` and `volumeGroupSnapshotClasses` have been moved from `controller` to the top of the values.
 
 Upgrades may fail to apply because of the changed deployment strategy for CRDs with an error such as:
@@ -124,7 +126,7 @@ The following options are available:
 | `controller.hostNetwork`               | Change `hostNetwork` to `true` when you want the pod to share its host's network namespace.                                    | `false`                                                                                            |
 | `controller.dnsConfig`                 | DNS settings for controller pod.                                                                                               | `{}`                                                                                               |
 | `controller.dnsPolicy`                 | DNS Policy for controller pod. For Pods running with hostNetwork, set to `ClusterFirstWithHostNet`.                            | `ClusterFirst`                                                                                     |
-| `webhook.enabled`                      | Toggle to disable the deployment of the snapshot controller.                                                                   | `true`                                                                                             |
+| `webhook.enabled`                      | Deploy the conversion webhook and inject the `Webhook` conversion strategy into the volumegroupsnapshotcontents CRD. Only needed for clusters still holding v1beta1/v1beta2 group snapshot objects. | `false`                                                            |
 | `webhook.fullnameOverride`             | Set the base name of deployed resources. Defaults to `snapshot-controller-conversion-webhook`.                                 | `""`                                                                                               |
 | `webhook.args`                         | Arguments to pass to the snapshot conversion webhook. Note: Keys will be converted to kebab-case, i.e. `oneArg` -> `--one-arg` | `...`                                                                                              |
 | `webhook.tls.certificateSecret`        | Name of the certificate secret to use for serving TLS.                                                                         | `""`                                                                                               |
