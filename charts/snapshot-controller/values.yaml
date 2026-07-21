@@ -78,7 +78,11 @@ controller:
   dnsPolicy: ClusterFirst
 
 webhook:
-  enabled: true
+  # The conversion webhook is only needed for clusters that still hold VolumeGroupSnapshot
+  # objects in the v1beta1/v1beta2 API versions. When disabled, the conversion strategy is
+  # not injected into the volumegroupsnapshotcontents CRD (it defaults to `None`, matching
+  # upstream). Enable this only if you rely on the older group snapshot API versions.
+  enabled: false
 
   replicaCount: 1
 
