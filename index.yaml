@@ -280,6 +280,26 @@ entries:
     version: 1.1.2
   linstor-cluster:
   - apiVersion: v2
+    appVersion: v2.10.0
+    created: "2026-08-05T13:23:01.289768646Z"
+    description: 'Deploy the Linstor Cluster via Piraeus Operator '
+    digest: 6691e93ebb9b0b67bf15da9c6362161ff502303560b98c588907f5cf0801bc11
+    home: https://github.com/piraeusdatastore/helm-charts
+    icon: https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/artwork/sandbox-artwork/icon/color.svg
+    keywords:
+    - storage
+    kubeVersion: '>= 1.20.0-0'
+    maintainers:
+    - name: The Piraeus Maintainers
+      url: https://github.com/piraeusdatastore
+    name: linstor-cluster
+    sources:
+    - https://github.com/piraeusdatastore/linstor-cluster
+    type: application
+    urls:
+    - https://github.com/piraeusdatastore/helm-charts/releases/download/linstor-cluster-1.2.0/linstor-cluster-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
     appVersion: v2.9.0
     created: "2025-10-17T12:18:49.742361403Z"
     description: 'Deploy the Linstor Cluster via Piraeus Operator '
@@ -3014,4 +3034,4 @@ entries:
     urls:
     - https://github.com/piraeusdatastore/helm-charts/releases/download/snapshot-validation-webhook-1.0.0-rc1/snapshot-validation-webhook-1.0.0-rc1.tgz
     version: 1.0.0-rc1
-generated: "2026-07-21T10:25:46.180285611Z"
+generated: "2026-08-05T13:23:01.289959691Z"
