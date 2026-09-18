@@ -14,8 +14,10 @@ crds:
 		curl -fsSL https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/$(APP_VERSION)/client/config/crd/groupsnapshot.storage.k8s.io_volumegroupsnapshots.yaml \
 	) | yq '(select(.metadata.name == "volumegroupsnapshotcontents.groupsnapshot.storage.k8s.io") | .spec.conversion) = {"strategy": "Webhook", "webhook": {"conversionReviewVersions": ["v1"], "clientConfig": "{{ toJson .ClientConfig }}"}}' \
 	  | yq '(select(.metadata.name == "volumegroupsnapshotcontents.groupsnapshot.storage.k8s.io") | .metadata.annotations["cert-manager.io/inject-ca-from"]) = "{{ .InsertCaFrom }}"' \
+	  | yq '.metadata.annotations["helm.sh/resource-policy"] = "{{ .KeepCRDs }}"' \
 	  | sed -e "s/'{{ toJson .ClientConfig }}'/{{ toJson .ClientConfig }}/" \
 	  | sed -e "s#\(cert-manager.io/inject-ca-from.*\)#{{ if .InsertCaFrom }}cert-manager.io/inject-ca-from: '{{ .InsertCaFrom }}'{{ end }}#" \
+	  | sed -e "s#^ *helm.sh/resource-policy.*#{{- if .KeepCRDs }}\n    helm.sh/resource-policy: keep\n{{- end }}#" \
 	  | sed -e 's#^  conversion:$$#{{- if .WebhookEnabled }}\n  conversion:#' \
 	  | sed -e 's#^      clientConfig: {{ toJson .ClientConfig }}$$#      clientConfig: {{ toJson .ClientConfig }}\n{{- end }}#' \
 	  > crds.yaml

@@ -62,5 +62,5 @@ data:
 {{- if $ca }}
 {{- $clientConfig = set $clientConfig "caBundle" $ca }}
 {{- end }}
-{{ tpl (.Files.Get "crds.yaml") (dict "ClientConfig" $clientConfig "InsertCaFrom" $insertCaFrom "WebhookEnabled" .Values.webhook.enabled) }}
+{{ tpl (.Files.Get "crds.yaml") (dict "ClientConfig" $clientConfig "InsertCaFrom" $insertCaFrom "WebhookEnabled" .Values.webhook.enabled "KeepCRDs" .Values.keepCRDs) }}
 {{- end }}
