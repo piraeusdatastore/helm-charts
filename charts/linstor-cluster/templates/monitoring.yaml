@@ -69,6 +69,22 @@ spec:
       app.kubernetes.io/component: linstor-satellite
 ---
 apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: linstor-affinity-controller
+  labels:
+    app.kubernetes.io/component: linstor-affinity-controller
+    {{- include "linstor-cluster.labels" . | nindent 4 }}
+spec:
+  podMetricsEndpoints:
+  - port: metrics
+    scheme: http
+    path: /metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: linstor-affinity-controller
+---
+apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: piraeus-datastore
@@ -122,7 +138,7 @@ spec:
           Storage pool "{{`{{ $labels.storage_pool }}`}}" on node "{{`{{ $labels.node }}`}}" ({{`{{ $labels.driver }}`}}={{`{{ $labels.backing_pool }}`}}) has less than 20% free space available.
       expr: ( linstor_storage_pool_capacity_free_bytes / linstor_storage_pool_capacity_total_bytes ) < 0.20
       labels:
-        severity: warn
+        severity: warning
   - name: drbd.rules
     rules:
     - alert: drbdReactorOffline
@@ -139,7 +155,7 @@ spec:
       expr: drbd_connection_state{drbd_connection_state!="Connected"} > 0
       for: 1m
       labels:
-        severity: warn
+        severity: warning
     - alert: drbdDeviceNotUpToDate
       annotations:
         description: |
@@ -147,7 +163,7 @@ spec:
       expr: drbd_device_state{drbd_device_state!~"UpToDate|Diskless|Inconsistent"} > 0
       for: 1m
       labels:
-        severity: warn
+        severity: warning
     - alert: drbdDeviceUnintentionalDiskless
       annotations:
         description: |
@@ -155,7 +171,7 @@ spec:
           This usually indicates IO errors reported on the backing device. Check the kernel log.
       expr: drbd_device_unintentionaldiskless > 0
       labels:
-        severity: warn
+        severity: warning
     - alert: drbdDeviceWithoutQuorum
       annotations:
         description: |
@@ -164,7 +180,7 @@ spec:
       expr: drbd_device_quorum == 0
       for: 1m
       labels:
-        severity: warn
+        severity: warning
     - alert: drbdResourceSuspended
       annotations:
         description: |
@@ -172,7 +188,7 @@ spec:
       expr: drbd_resource_suspended > 0
       for: 1m
       labels:
-        severity: warn
+        severity: warning
     - alert: drbdResourceResyncWithoutProgress
       annotations:
         description: |
@@ -180,7 +196,7 @@ spec:
           This may indicate there is no connection to UpToDate data, or a stuck resync.
       expr: drbd_device_state{drbd_device_state="Inconsistent"} and delta(drbd_peerdevice_outofsync_bytes[5m]) >= 0
       labels:
-        severity: warn
+        severity: warning
     - alert: drbdResourceWithNoUpToDateReplicas
       annotations:
         description: |
