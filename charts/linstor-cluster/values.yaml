@@ -143,6 +143,29 @@ ingress:
   #   - linbit-sds.local
   #   secretName: preprovisioned-secret
 
+# Create a Gateway API HTTPRoute to expose the LINSTOR Controller outside the cluster.
+httpRoute:
+  # Enable the HTTPRoute resource.
+  enabled: false
+  # Additional labels to set on the HTTPRoute resource.
+  labels: {}
+  # Additional annotations to set on the HTTPRoute resource.
+  annotations: {}
+  # The Gateways the route attaches to.
+  parentRefs: []
+  # - name: my-gateway
+  #   namespace: gateway-system
+  #   sectionName: https
+  # Hostnames the route matches. Leave empty to match all hostnames accepted by the Gateway.
+  hostnames:
+    - linbit-sds.local
+  # On which path the LINSTOR Controller should be exposed on
+  path: /
+  # The path match type: PathPrefix, Exact or RegularExpression.
+  pathType: PathPrefix
+  # NB: If API TLS is enabled, the Gateway talks HTTPS to the LINSTOR Controller. Depending on the Gateway
+  # implementation, this requires a BackendTLSPolicy and a client certificate configured on the Gateway.
+
 # Definition of linstorSatelliteConfigurations
 # Ref https://github.com/piraeusdatastore/piraeus-operator/blob/v2/docs/reference/linstorsatelliteconfiguration.md
 linstorSatelliteConfigurations: []

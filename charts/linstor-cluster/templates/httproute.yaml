@@ -1,0 +1,35 @@
+{{ if .Values.httpRoute.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "linstor-cluster.fullname"  $ }}
+  namespace: {{ .Release.Namespace }}
+{{- if .Values.httpRoute.annotations }}
+  annotations:
+    {{- toYaml .Values.httpRoute.annotations | nindent 4 }}
+{{- end }}
+  labels:
+    {{- include "linstor-cluster.labels" $ | nindent 4 }}
+{{- if .Values.httpRoute.labels }}
+    {{- toYaml .Values.httpRoute.labels | nindent 4 }}
+{{- end }}
+spec:
+  parentRefs:
+    {{- toYaml .Values.httpRoute.parentRefs | nindent 4 }}
+{{- if .Values.httpRoute.hostnames }}
+  hostnames:
+    {{- toYaml .Values.httpRoute.hostnames | nindent 4 }}
+{{- end }}
+  rules:
+  - matches:
+    - path:
+        type: {{ .Values.httpRoute.pathType }}
+        value: {{ .Values.httpRoute.path }}
+    backendRefs:
+    - name: linstor-controller
+{{- if or .Values.createApiTLS (dig "apiTLS" "" .Values.linstorCluster) }}
+      port: 3371
+{{- else }}
+      port: 3370
+{{- end }}
+{{ end }}
