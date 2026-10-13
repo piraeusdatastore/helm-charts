@@ -170,7 +170,7 @@ spec:
     - alert: drbdDeviceUnintentionalDiskless
       annotations:
         description: |
-          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" is unintenionally diskless.
+          DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" is unintentionally diskless.
           This usually indicates IO errors reported on the backing device. Check the kernel log.
       expr: drbd_device_unintentionaldiskless > 0
       for: 1m
