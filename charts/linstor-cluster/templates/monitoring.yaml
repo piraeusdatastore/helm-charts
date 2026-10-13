@@ -99,6 +99,7 @@ spec:
         description: |
           LINSTOR Controller is not reachable.
       expr: up{job="linstor-controller"} == 0
+      for: 1m
       labels:
         severity: critical
     - alert: linstorSatelliteErrorRate
@@ -123,6 +124,7 @@ spec:
           LINSTOR Satellite "{{`{{ $labels.node }}`}}" is not ONLINE.
           Check that the Satellite is running and reachable from the LINSTOR Controller.
       expr: linstor_node_state{nodetype="SATELLITE"} != 2 and on (node) up{job="{{ .Release.Namespace }}/linstor-satellite"}
+      for: 1m
       labels:
         severity: critical
     - alert: linstorStoragePoolErrors
@@ -146,6 +148,7 @@ spec:
         description: |
           DRBD Reactor on "{{`{{ $labels.node }}`}}" is not reachable.
       expr: up{job="{{ .Release.Namespace }}/linstor-satellite"} == 0
+      for: 1m
       labels:
         severity: critical
     - alert: drbdConnectionNotConnected
@@ -170,6 +173,7 @@ spec:
           DRBD device "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" is unintenionally diskless.
           This usually indicates IO errors reported on the backing device. Check the kernel log.
       expr: drbd_device_unintentionaldiskless > 0
+      for: 1m
       labels:
         severity: warning
     - alert: drbdDeviceWithoutQuorum
@@ -195,6 +199,7 @@ spec:
           DRBD resource "{{`{{ $labels.name }}`}}" on "{{`{{ $labels.node }}`}}" has been in Inconsistent without resync progress for 5 minutes.
           This may indicate there is no connection to UpToDate data, or a stuck resync.
       expr: drbd_device_state{drbd_device_state="Inconsistent"} and delta(drbd_peerdevice_outofsync_bytes[5m]) >= 0
+      for: 5m
       labels:
         severity: warning
     - alert: drbdResourceWithNoUpToDateReplicas
